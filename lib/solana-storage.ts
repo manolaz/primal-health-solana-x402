@@ -257,6 +257,31 @@ export class HealthDataStorageService
 
     return tx;
   }
+
+  // Get Patient Account
+  async getPatientAccount ( authority: PublicKey ): Promise<{ did: string } | null>
+  {
+    const dummyWallet = new Wallet( Keypair.generate() );
+    const provider = new AnchorProvider( this.connection, dummyWallet, {
+      preflightCommitment: 'confirmed',
+    } );
+    const program = new Program( IDL, provider );
+
+    const [ patientPDA ] = PublicKey.findProgramAddressSync(
+      [ Buffer.from( "patient" ), authority.toBuffer() ],
+      program.programId
+    );
+
+    try
+    {
+      const account = await ( program.account as any ).patientAccount.fetch( patientPDA );
+      return account as { did: string };
+    } catch ( error )
+    {
+      return null;
+    }
+  }
+
   // Store encrypted health data on Solana
   async storeHealthData (
     healthData: MinimalHealthData,
@@ -307,7 +332,7 @@ export class HealthDataStorageService
 
     try
     {
-      const account = await program.account.healthDataAccount.fetch( healthDataPDA );
+      const account = await ( program.account as any ).healthDataAccount.fetch( healthDataPDA );
       if ( account )
       {
         return decryptHealthDataFromBlockchain( account.encryptedData as string, encryptionKey );
@@ -323,7 +348,8 @@ export class HealthDataStorageService
   // Submit insurance claim
   async submitInsuranceClaim (
     claim: InsuranceClaim,
-    signer: Keypair
+    signer: Keypair,
+    providerPubkey: PublicKey
   ): Promise<string>
   {
     const program = this.getProgram( signer );
@@ -336,24 +362,12 @@ export class HealthDataStorageService
     // Convert claim amount to lamports (assuming claimAmount is in SOL)
     const amount = new BN( claim.claimAmount * LAMPORTS_PER_SOL );
 
-    // We need the provider's public key. In a real app, we'd look this up from the DID.
-    // For now, we'll assume the claim.insuranceProviderDID contains the pubkey or we have a way to resolve it.
-    // Since we don't have a DID resolver here, we'll use a placeholder or derive it if possible.
-    // IMPORTANT: The program expects a Pubkey for the provider.
-    // Let's assume for this demo that we can't easily resolve it without a lookup service.
-    // However, the instruction requires `provider` account.
-    // We will use a dummy key for now if we can't resolve it, but this will fail verification if not correct.
-    // Ideally, we should pass the provider's public key to this function.
-    // For the sake of this implementation, let's assume the signer knows the provider's key.
-    // We'll use a random key for now to satisfy the type, but this needs to be fixed in a real app.
-    const providerPubkey = Keypair.generate().publicKey; // REPLACE WITH REAL PROVIDER KEY
-
     const tx = await program.methods
       .createClaim( claim.claimId, amount, claim.healthDataHash )
       .accounts( {
         claimAccount: claimPDA,
         patient: signer.publicKey,
-        provider: providerPubkey, // This should be the actual provider's pubkey
+        provider: providerPubkey,
         systemProgram: SystemProgram.programId,
       } )
       .signers( [ signer ] )
@@ -378,7 +392,7 @@ export class HealthDataStorageService
 
     try
     {
-      const account = await program.account.claimAccount.fetch( claimPDA );
+      const account = await ( program.account as any ).claimAccount.fetch( claimPDA );
       return !!account;
     } catch ( error )
     {
@@ -471,11 +485,12 @@ export async function retrieveHealthDataFromChain (
 
 export async function submitClaimToChain (
   claim: InsuranceClaim,
-  signer: Keypair
+  signer: Keypair,
+  providerPubkey: PublicKey
 ): Promise<string>
 {
   const service = await createHealthDataStorageService();
-  return service.submitInsuranceClaim( claim, signer );
+  return service.submitInsuranceClaim( claim, signer, providerPubkey );
 }
 
 export async function processClaimPayment (

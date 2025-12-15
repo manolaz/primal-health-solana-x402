@@ -19,17 +19,24 @@ export async function GET ( request: NextRequest )
         }
 
         // In a real app, we would query the blockchain to see if the patient account exists
-        // For now, we'll simulate it or use the storage service if we can read without signing
-        // The storage service requires a signer for most operations, but we can instantiate it with a dummy
+        const storageService = new HealthDataStorageService();
+        const patientAccount = await storageService.getPatientAccount( new PublicKey( publicKeyStr ) );
 
-        // TODO: Implement read-only check in storage service
-        // For now, return a mock response or try to fetch the account
-
-        return NextResponse.json( {
-            exists: true,
-            did: `did:solana:devnet:${ publicKeyStr }`,
-            publicKey: publicKeyStr
-        } );
+        if ( patientAccount )
+        {
+            return NextResponse.json( {
+                exists: true,
+                did: patientAccount.did,
+                publicKey: publicKeyStr
+            } );
+        }
+        else
+        {
+            return NextResponse.json( {
+                exists: false,
+                publicKey: publicKeyStr
+            } );
+        }
 
     } catch ( error )
     {

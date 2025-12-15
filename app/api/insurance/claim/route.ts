@@ -60,7 +60,7 @@ export async function POST ( request: NextRequest )
       console.warn( "Airdrop failed", e );
     }
 
-    const txSignature = await submitClaimToChain( claim, signer );
+    const txSignature = await submitClaimToChain( claim, signer, insuranceManager.getPublicKey() );
 
     return NextResponse.json( {
       success: true,
