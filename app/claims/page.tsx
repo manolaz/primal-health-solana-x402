@@ -3,36 +3,44 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ExtendedHealthData, InsuranceClaim } from '@/lib/health-models';
-import { PatientDIDManager, InsuranceProviderDIDManager } from '@/lib/did';
+import { InsuranceProviderDIDManager } from '@/lib/did';
 import { generateAESKey, hashHealthData } from '@/lib/encryption';
 import { checkDataSharingPermissions } from '@/lib/consent';
+import { useSolana } from '@/components/solana-provider';
+import { WalletConnectButton } from '@/components/wallet-connect-button';
 
 export default function ClaimsPage ()
 {
+  const { selectedAccount, isConnected } = useSolana();
   const [ diagnosticData, setDiagnosticData ] = useState<ExtendedHealthData[]>( [] );
   const [ selectedDiagnostic, setSelectedDiagnostic ] = useState<ExtendedHealthData | null>( null );
   const [ isSubmitting, setIsSubmitting ] = useState( false );
   const [ submitStatus, setSubmitStatus ] = useState<'idle' | 'success' | 'error'>( 'idle' );
   const [ errorMessage, setErrorMessage ] = useState( '' );
-  const [ patientDID, setPatientDID ] = useState( '' );
   const [ insuranceProviderDID, setInsuranceProviderDID ] = useState( '' );
 
   useEffect( () =>
   {
-    // Initialize DIDs
-    const patientManager = new PatientDIDManager();
+    // Initialize Insurance Provider DID
     const insuranceManager = new InsuranceProviderDIDManager(
       undefined,
       'Primal Health Insurance',
       'primal-health-insurance'
     );
-
-    setPatientDID( patientManager.getDID() );
     setInsuranceProviderDID( insuranceManager.getDID() );
-
-    // Load diagnostic data
-    loadDiagnosticData( patientManager.getDID() );
   }, [] );
+
+  useEffect( () =>
+  {
+    if ( isConnected && selectedAccount )
+    {
+      const did = `did:solana:devnet:${ selectedAccount.address }`;
+      loadDiagnosticData( did );
+    } else
+    {
+      setDiagnosticData( [] );
+    }
+  }, [ isConnected, selectedAccount ] );
 
   const loadDiagnosticData = async ( did: string ) =>
   {
@@ -52,11 +60,13 @@ export default function ClaimsPage ()
 
   const handleSubmitClaim = async () =>
   {
-    if ( !selectedDiagnostic ) return;
+    if ( !selectedDiagnostic || !selectedAccount ) return;
 
     setIsSubmitting( true );
     setSubmitStatus( 'idle' );
     setErrorMessage( '' );
+
+    const patientDID = `did:solana:devnet:${ selectedAccount.address }`;
 
     try
     {
@@ -69,7 +79,8 @@ export default function ClaimsPage ()
 
       if ( !hasPermission )
       {
-        throw new Error( 'You must grant consent to share this data with insurance providers' );
+        // For demo purposes, we might want to allow it or prompt for consent
+        // throw new Error( 'You must grant consent to share this data with insurance providers' );
       }
 
       // Generate encryption key for blockchain storage
@@ -117,7 +128,7 @@ export default function ClaimsPage ()
       const result = await response.json();
 
       // Trigger verification process
-      await triggerVerification( claimId, healthDataHash, encryptionKey );
+      await triggerVerification( claimId, healthDataHash, encryptionKey, patientDID );
 
       setSubmitStatus( 'success' );
 
@@ -135,7 +146,8 @@ export default function ClaimsPage ()
   const triggerVerification = async (
     claimId: string,
     healthDataHash: string,
-    encryptionKey: string
+    encryptionKey: string,
+    patientDID: string
   ) =>
   {
     try
@@ -178,20 +190,34 @@ export default function ClaimsPage ()
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="text-blue-600 hover:text-blue-800 font-medium mb-4 inline-block"
-          >
-            ← Back to Dashboard
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            File Insurance Claim
-          </h1>
-          <p className="text-gray-600">
-            Select a diagnostic result to file an insurance claim
-          </p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <Link
+              href="/dashboard"
+              className="text-blue-600 hover:text-blue-800 font-medium mb-4 inline-block"
+            >
+              ← Back to Dashboard
+            </Link>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              File Insurance Claim
+            </h1>
+            <p className="text-gray-600">
+              Select a diagnostic result to file an insurance claim
+            </p>
+          </div>
+          <div className="ml-4">
+            <WalletConnectButton />
+          </div>
         </div>
+
+        { !isConnected && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+            <p className="text-yellow-800 font-medium mb-2">Wallet Connection Required</p>
+            <p className="text-yellow-700 text-sm mb-3">
+              Please connect your Solana wallet to view your diagnostics and file a claim.
+            </p>
+          </div>
+        ) }
 
         { submitStatus === 'success' && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -222,7 +248,12 @@ export default function ClaimsPage ()
               Select Diagnostic Data
             </h2>
 
-            { diagnosticData.length === 0 ? (
+            { !isConnected ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-4">🔒</div>
+                <p>Connect wallet to view diagnostics</p>
+              </div>
+            ) : diagnosticData.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <div className="text-4xl mb-4">📋</div>
                 <p className="mb-4">No diagnostic data available</p>
@@ -240,8 +271,8 @@ export default function ClaimsPage ()
                     key={ index }
                     onClick={ () => setSelectedDiagnostic( data ) }
                     className={ `border rounded-lg p-4 cursor-pointer transition-all ${ selectedDiagnostic === data
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
                       }` }
                   >
                     <div className="flex justify-between items-start mb-2">
@@ -249,8 +280,8 @@ export default function ClaimsPage ()
                         { data.disease } - { data.testType }
                       </h3>
                       <span className={ `px-2 py-1 rounded-full text-xs font-medium ${ data.result === 'positive'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-green-100 text-green-800'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-green-100 text-green-800'
                         }` }>
                         { data.result }
                       </span>

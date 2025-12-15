@@ -7,9 +7,13 @@ import { PatientDIDManager } from '@/lib/did';
 import { generateAESKey, encryptHealthDataForBlockchain, hashHealthData } from '@/lib/encryption';
 import { storeHealthDataOnChain, HealthDataStorageService } from '@/lib/solana-storage';
 import { Keypair } from '@solana/web3.js';
+import { useSolana } from '@/components/solana-provider';
+import { WalletConnectButton } from '@/components/wallet-connect-button';
+import { StandardWalletAdapter } from '@/lib/wallet-adapter';
 
 export default function DiagnosticsPage ()
 {
+  const { selectedWallet, selectedAccount, isConnected } = useSolana();
   const [ formData, setFormData ] = useState<Partial<ExtendedHealthData>>( {
     timestamp: Date.now(),
     sharingConsent: false,
@@ -36,15 +40,22 @@ export default function DiagnosticsPage ()
   const handleSubmit = async ( e: React.FormEvent ) =>
   {
     e.preventDefault();
+    if ( !isConnected || !selectedWallet || !selectedAccount )
+    {
+      setErrorMessage( "Please connect your wallet first." );
+      setSubmitStatus( 'error' );
+      return;
+    }
+
     setIsSubmitting( true );
     setSubmitStatus( 'idle' );
     setErrorMessage( '' );
 
     try
     {
-      // Create patient DID if not exists
-      const patientManager = new PatientDIDManager();
-      const patientDID = patientManager.getDID();
+      // Create patient DID from wallet public key (mock implementation for now)
+      // In a real app, we would derive DID from the wallet's public key
+      const patientDID = `did:solana:devnet:${ selectedAccount.address }`;
 
       // Validate form data
       const healthData: ExtendedHealthData = {
@@ -67,20 +78,10 @@ export default function DiagnosticsPage ()
         patientDID: healthData.patientDID,
       };
 
-      // Encrypt and store on Solana
-      const signer = Keypair.generate(); // In real app, use user's wallet
+      // Use connected wallet
+      const walletAdapter = new StandardWalletAdapter( selectedWallet, selectedAccount );
 
-      // Fund the signer for demo
-      const storageService = new HealthDataStorageService();
-      try
-      {
-        await storageService.requestAirdrop( signer.publicKey, 1 );
-      } catch ( e )
-      {
-        console.warn( "Airdrop failed", e );
-      }
-
-      const result = await storeHealthDataOnChain( minimalData, key, signer );
+      const result = await storeHealthDataOnChain( minimalData, key, walletAdapter );
 
       // Index data in API
       await fetch( '/api/diagnostics', {
@@ -107,20 +108,34 @@ export default function DiagnosticsPage ()
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="mb-8">
-            <Link
-              href="/"
-              className="text-blue-600 hover:text-blue-800 font-medium mb-4 inline-block"
-            >
-              ← Back to Home
-            </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Health Diagnostics Submission
-            </h1>
-            <p className="text-gray-600">
-              Submit your health diagnostic results securely. Only minimal, encrypted data will be stored on the blockchain.
-            </p>
+          <div className="mb-8 flex justify-between items-start">
+            <div>
+              <Link
+                href="/"
+                className="text-blue-600 hover:text-blue-800 font-medium mb-4 inline-block"
+              >
+                ← Back to Home
+              </Link>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Health Diagnostics Submission
+              </h1>
+              <p className="text-gray-600">
+                Submit your health diagnostic results securely. Only minimal, encrypted data will be stored on the blockchain.
+              </p>
+            </div>
+            <div className="ml-4">
+              <WalletConnectButton />
+            </div>
           </div>
+
+          { !isConnected && (
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+              <p className="text-yellow-800 font-medium mb-2">Wallet Connection Required</p>
+              <p className="text-yellow-700 text-sm mb-3">
+                Please connect your Solana wallet to sign the transaction and store your health data on-chain.
+              </p>
+            </div>
+          ) }
 
           { submitStatus === 'success' && (
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -302,7 +317,7 @@ export default function DiagnosticsPage ()
 
             <button
               type="submit"
-              disabled={ isSubmitting || !formData.sharingConsent }
+              disabled={ isSubmitting || !formData.sharingConsent || !isConnected }
               className="w-full py-3 px-4 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               { isSubmitting ? 'Submitting...' : 'Submit Health Data 🔒' }

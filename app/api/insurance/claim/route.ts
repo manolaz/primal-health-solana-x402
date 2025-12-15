@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { InsuranceClaim, validateInsuranceClaim } from '@/lib/health-models';
-import { submitClaimToChain, HealthDataStorageService } from '@/lib/solana-storage';
+import { submitClaimToChain, HealthDataStorageService, InMemoryWallet } from '@/lib/solana-storage';
 import { PatientDIDManager, InsuranceProviderDIDManager } from '@/lib/did';
 import { Keypair } from '@solana/web3.js';
 
@@ -21,12 +21,11 @@ export async function POST ( request: NextRequest )
     // Validate claim data
     const claim: InsuranceClaim = validateInsuranceClaim( claimData );
 
-    // Verify patient DID exists (in production, check against registry)
-    const patientManager = new PatientDIDManager();
-    if ( claim.patientDID !== patientManager.getDID() )
+    // Verify patient DID format
+    if ( !claim.patientDID.startsWith( 'did:solana:' ) )
     {
       return NextResponse.json(
-        { error: 'Invalid patient DID' },
+        { error: 'Invalid patient DID format' },
         { status: 400 }
       );
     }
@@ -49,6 +48,7 @@ export async function POST ( request: NextRequest )
 
     // Submit claim to blockchain
     const signer = Keypair.generate(); // In production, use authenticated signer
+    const wallet = new InMemoryWallet( signer );
 
     // Fund the signer for the demo
     const storageService = new HealthDataStorageService();
@@ -60,7 +60,7 @@ export async function POST ( request: NextRequest )
       console.warn( "Airdrop failed", e );
     }
 
-    const txSignature = await submitClaimToChain( claim, signer, insuranceManager.getPublicKey() );
+    const txSignature = await submitClaimToChain( claim, wallet, insuranceManager.getPublicKey() );
 
     return NextResponse.json( {
       success: true,

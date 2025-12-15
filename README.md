@@ -42,6 +42,14 @@ Primal Health enables patients to submit minimal encrypted health diagnostic dat
 6. Patient receives instant blockchain-verified payment
 ```
 
+### 🎥 Demo
+
+Watch the full integration in action:
+
+[![Primal Health Demo](https://img.youtube.com/vi/PLACEHOLDER_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=PLACEHOLDER_VIDEO_ID)
+
+> *Note: This video demonstrates the end-to-end flow from diagnostic submission to x402 payment and on-chain verification.*
+
 ---
 
 ## Key Features
@@ -57,12 +65,58 @@ Primal Health enables patients to submit minimal encrypted health diagnostic dat
 
 ---
 
+## Why x402 & Solana?
+
+This project leverages the unique strengths of both x402 and Solana to solve critical issues in healthcare payments and data integrity.
+
+### The Role of x402 (Payment Protocol)
+
+**Problem:** Traditional healthcare payments are slow, opaque, and riddled with administrative friction. Verifying insurance coverage often takes days.
+**Solution:** x402 acts as an intelligent payment gateway that sits between the patient and the insurance services.
+
+- **Instant Verification:** x402 middleware verifies payment capability instantly before processing claims.
+- **Programmable Access:** It enables "pay-per-claim" or "pay-per-access" models, ensuring that the infrastructure costs are covered transparently.
+- **Seamless UX:** Integrates Coinbase Pay to allow patients to pay for claim processing fees using crypto, removing the need for complex banking integrations in the MVP phase.
+
+### The Role of Solana (Blockchain Layer)
+
+**Problem:** Health data is often siloed and tamper-prone. Proving that a diagnostic result hasn't been altered is difficult.
+**Solution:** Solana provides the high-speed, low-cost consensus layer.
+
+- **Immutable Audit Trail:** Every diagnostic result hash is stored on-chain.
+- **High Throughput:** Solana's speed ensures that claim verifications happen in near real-time, not minutes or hours.
+- **Low Cost:** Micro-transactions for data storage are economically viable on Solana, unlike other chains.
+
+---
+
+## Technical Architecture
+
+**Primal Health** is built on a modern, robust stack designed for performance and security.
+
+### Stack Overview
+
+- **Frontend Framework:** [Next.js 16](https://nextjs.org/) (App Router) & [React 19](https://react.dev/)
+- **Styling:** Tailwind CSS & Shadcn UI
+- **Blockchain Interaction:** [Anchor Framework](https://www.anchor-lang.com/) & Solana Web3.js
+- **Payment Middleware:** [x402-next](https://github.com/coinbase/x402)
+- **Identity:** Decentralized Identifiers (DID) on Solana
+
+### Integration Flow
+
+1. **User Action:** Patient initiates a claim.
+2. **x402 Gate:** Middleware intercepts the request. If a processing fee is required, it prompts the user via Coinbase Pay.
+3. **Payment Success:** Upon successful payment, x402 issues a session token.
+4. **Backend Processing:** The application validates the session token and proceeds to interact with the Solana smart contract.
+5. **On-Chain Settlement:** The smart contract verifies the health data hash and executes the claim logic.
+
+---
+
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ or Bun
-- pnpm, npm, or yarn
+- Node.js 22+
+- pnpm, or Bun, npm, or yarn
 - A Solana wallet (Phantom, Solflare, etc.) for testing
 
 ### Installation
@@ -297,6 +351,34 @@ To accept real payments:
 2. Update your wallet address to your production wallet
 3. Test thoroughly before deploying!
 4. Consider implementing additional security measures
+
+---
+
+## Roadmap & Future Potential
+
+Primal Health is designed to scale from this MVP to a global standard for decentralized insurance.
+
+### 🚀 Phase 1: MVP (Current)
+
+- **Core Infrastructure:** Solana Devnet smart contracts, x402 payment integration.
+- **Basic Privacy:** AES-256 encryption and DID-based identity.
+- **Proof of Concept:** End-to-end flow for diagnostic submission and claim payout.
+
+### 🛡️ Phase 2: Enhanced Privacy (Next Steps)
+
+- **Zero-Knowledge Proofs (ZKPs):** Implement ZKPs to allow insurance providers to verify "Is the result positive?" without ever seeing the raw data.
+- **Multi-Sig Wallets:** Enhanced security for insurance provider treasuries.
+
+### 🌍 Phase 3: Mainnet & Adoption
+
+- **Mainnet Launch:** Deploy contracts to Solana Mainnet Beta.
+- **Provider API:** SDK for existing insurance companies to plug into the Primal Health network.
+- **Mobile App:** Native mobile experience for patients to manage claims on the go.
+
+### 🏥 Phase 4: Ecosystem Expansion
+
+- **Lab Marketplace:** Allow diagnostic labs to become verified data publishers.
+- **Cross-Chain Interoperability:** Bridge identity and reputation to other networks.
 
 ---
 

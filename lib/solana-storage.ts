@@ -8,7 +8,7 @@ import
   Transaction,
   VersionedTransaction,
 } from '@solana/web3.js';
-import { Program, AnchorProvider, Idl, BN } from '@coral-xyz/anchor';
+import { Program, AnchorProvider, Idl, BN, Wallet } from '@coral-xyz/anchor';
 import { encryptHealthDataForBlockchain, decryptHealthDataFromBlockchain, hashHealthData, hashToBuffer } from './encryption';
 import { MinimalHealthData, InsuranceClaim } from './health-models';
 
@@ -177,7 +177,7 @@ const IDL: Idl = {
   ]
 };
 
-class InMemoryWallet
+export class InMemoryWallet
 {
   constructor ( readonly payer: Keypair ) { }
 
@@ -236,9 +236,8 @@ export class HealthDataStorageService
     this.connection = getConnection();
   }
 
-  private getProgram ( signer: Keypair ): Program
+  private getProgram ( wallet: Wallet ): Program
   {
-    const wallet = new InMemoryWallet( signer );
     const provider = new AnchorProvider( this.connection, wallet, {
       preflightCommitment: 'confirmed',
     } );
@@ -247,13 +246,13 @@ export class HealthDataStorageService
   // Initialize Patient Account
   async initializePatient (
     did: string,
-    signer: Keypair
+    wallet: Wallet
   ): Promise<string>
   {
-    const program = this.getProgram( signer );
+    const program = this.getProgram( wallet );
 
     const [ patientPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "patient" ), signer.publicKey.toBuffer() ],
+      [ Buffer.from( "patient" ), wallet.publicKey.toBuffer() ],
       program.programId
     );
 
@@ -261,10 +260,9 @@ export class HealthDataStorageService
       .initializePatient( did )
       .accounts( {
         patientAccount: patientPDA,
-        authority: signer.publicKey,
+        authority: wallet.publicKey,
         systemProgram: SystemProgram.programId,
       } )
-      .signers( [ signer ] )
       .rpc();
 
     return tx;
@@ -274,13 +272,13 @@ export class HealthDataStorageService
   async initializeProvider (
     did: string,
     name: string,
-    signer: Keypair
+    wallet: Wallet
   ): Promise<string>
   {
-    const program = this.getProgram( signer );
+    const program = this.getProgram( wallet );
 
     const [ providerPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "provider" ), signer.publicKey.toBuffer() ],
+      [ Buffer.from( "provider" ), wallet.publicKey.toBuffer() ],
       program.programId
     );
 
@@ -288,10 +286,9 @@ export class HealthDataStorageService
       .initializeProvider( did, name )
       .accounts( {
         providerAccount: providerPDA,
-        authority: signer.publicKey,
+        authority: wallet.publicKey,
         systemProgram: SystemProgram.programId,
       } )
-      .signers( [ signer ] )
       .rpc();
 
     return tx;
@@ -325,10 +322,10 @@ export class HealthDataStorageService
   async storeHealthData (
     healthData: MinimalHealthData,
     encryptionKey: string,
-    signer: Keypair
+    wallet: Wallet
   ): Promise<{ signature: string; dataHash: string }>
   {
-    const program = this.getProgram( signer );
+    const program = this.getProgram( wallet );
     const encryptedData = encryptHealthDataForBlockchain( healthData, encryptionKey );
     const dataHash = hashHealthData( JSON.stringify( healthData ) );
 
@@ -341,10 +338,9 @@ export class HealthDataStorageService
       .submitHealthData( dataHash, encryptedData )
       .accounts( {
         healthDataAccount: healthDataPDA,
-        owner: signer.publicKey,
+        owner: wallet.publicKey,
         systemProgram: SystemProgram.programId,
       } )
-      .signers( [ signer ] )
       .rpc();
 
     return { signature: tx, dataHash };
@@ -387,11 +383,11 @@ export class HealthDataStorageService
   // Submit insurance claim
   async submitInsuranceClaim (
     claim: InsuranceClaim,
-    signer: Keypair,
+    wallet: Wallet,
     providerPubkey: PublicKey
   ): Promise<string>
   {
-    const program = this.getProgram( signer );
+    const program = this.getProgram( wallet );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
       [ Buffer.from( "claim" ), hashToBuffer( claim.claimId ) ],
@@ -405,11 +401,10 @@ export class HealthDataStorageService
       .createClaim( claim.claimId, amount, claim.healthDataHash )
       .accounts( {
         claimAccount: claimPDA,
-        patient: signer.publicKey,
+        patient: wallet.publicKey,
         provider: providerPubkey,
         systemProgram: SystemProgram.programId,
       } )
-      .signers( [ signer ] )
       .rpc();
 
     return tx;
@@ -442,11 +437,11 @@ export class HealthDataStorageService
   // Process payment for a claim
   async processPayment (
     claimId: string,
-    providerSigner: Keypair,
+    wallet: Wallet,
     patientPubkey: PublicKey
   ): Promise<string>
   {
-    const program = this.getProgram( providerSigner );
+    const program = this.getProgram( wallet );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
       [ Buffer.from( "claim" ), hashToBuffer( claimId ) ],
@@ -457,11 +452,10 @@ export class HealthDataStorageService
       .processPayment()
       .accounts( {
         claimAccount: claimPDA,
-        provider: providerSigner.publicKey,
+        provider: wallet.publicKey,
         patient: patientPubkey,
         systemProgram: SystemProgram.programId,
       } )
-      .signers( [ providerSigner ] )
       .rpc();
 
     return tx;
@@ -505,11 +499,11 @@ export function validateDataIntegrity (
 export async function storeHealthDataOnChain (
   healthData: MinimalHealthData,
   encryptionKey: string,
-  signer: Keypair
+  wallet: Wallet
 ): Promise<{ signature: string; dataHash: string }>
 {
   const service = await createHealthDataStorageService();
-  return service.storeHealthData( healthData, encryptionKey, signer );
+  return service.storeHealthData( healthData, encryptionKey, wallet );
 }
 
 export async function retrieveHealthDataFromChain (
@@ -524,20 +518,20 @@ export async function retrieveHealthDataFromChain (
 
 export async function submitClaimToChain (
   claim: InsuranceClaim,
-  signer: Keypair,
+  wallet: Wallet,
   providerPubkey: PublicKey
 ): Promise<string>
 {
   const service = await createHealthDataStorageService();
-  return service.submitInsuranceClaim( claim, signer, providerPubkey );
+  return service.submitInsuranceClaim( claim, wallet, providerPubkey );
 }
 
 export async function processClaimPayment (
   claimId: string,
-  providerSigner: Keypair,
+  wallet: Wallet,
   patientPubkey: PublicKey
 ): Promise<string>
 {
   const service = await createHealthDataStorageService();
-  return service.processPayment( claimId, providerSigner, patientPubkey );
+  return service.processPayment( claimId, wallet, patientPubkey );
 }
