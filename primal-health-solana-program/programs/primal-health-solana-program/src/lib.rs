@@ -221,10 +221,6 @@ pub struct ClaimAccount {
     pub timestamp: i64,
 }
 
-    #[msg("The patient account does not match the claim.")]
-    InvalidPatient,
-    #[msg("The claim must be verified before payment.")]
-    ClaimNotVerified,
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub enum ClaimStatus {
     Pending,
@@ -237,4 +233,8 @@ pub enum ClaimStatus {
 pub enum ErrorCode {
     #[msg("You are not authorized to perform this action.")]
     Unauthorized,
+    #[msg("The patient account does not match the claim.")]
+    InvalidPatient,
+    #[msg("The claim must be verified before payment.")]
+    ClaimNotVerified,
 }
