@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@coral-xyz/anchor':
+        specifier: ^0.32.1
+        version: 0.32.1(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@solana/sysvars':
+        specifier: ^5.1.0
+        version: 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@solana/wallet-adapter-base':
         specifier: ^0.9.27
         version: 0.9.27(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
@@ -16,7 +22,7 @@ importers:
         version: 0.15.39(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(bs58@6.0.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)
       '@solana/wallet-adapter-wallets':
         specifier: ^0.19.37
-        version: 0.19.37(@babel/runtime@7.28.4)(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@types/react@19.2.7)(bs58@6.0.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 0.19.37(@babel/runtime@7.28.4)(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@types/react@19.2.7)(bs58@6.0.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@solana/web3.js':
         specifier: ^1.98.4
         version: 1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -49,7 +55,7 @@ importers:
         version: 2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       x402-next:
         specifier: ^0.7.3
-        version: 0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        version: 0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -253,6 +259,20 @@ packages:
 
   '@coinbase/wallet-sdk@4.3.6':
     resolution: {integrity: sha512-4q8BNG1ViL4mSAAvPAtpwlOs1gpC+67eQtgIwNvT3xyeyFFd+guwkc8bcX5rTmQhXpqnhzC4f0obACbP9CqMSA==}
+
+  '@coral-xyz/anchor-errors@0.31.1':
+    resolution: {integrity: sha512-NhNEku4F3zzUSBtrYz84FzYWm48+9OvmT1Hhnwr6GnPQry2dsEqH/ti/7ASjjpoFTWRnPXrjAIT1qM6Isop+LQ==}
+    engines: {node: '>=10'}
+
+  '@coral-xyz/anchor@0.32.1':
+    resolution: {integrity: sha512-zAyxFtfeje2FbMA1wzgcdVs7Hng/MijPKpRijoySPCicnvcTQs/+dnPZ/cR+LcXM9v9UYSyW81uRNYZtN5G4yg==}
+    engines: {node: '>=17'}
+
+  '@coral-xyz/borsh@0.31.1':
+    resolution: {integrity: sha512-9N8AU9F0ubriKfNE3g1WF0/4dtlGXoBN/hd1PvbNBamBNwRgHxH4P+o3Zt7rSEloW1HUs6LfZEchlx9fW7POYw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      '@solana/web3.js': ^1.69.0
 
   '@ecies/ciphers@0.2.5':
     resolution: {integrity: sha512-GalEZH4JgOMHYYcYmVqnFirFsjZHeoGMDt9IxEnM9F7GRUUyUksJ7Ou53L83WHJq3RWKD3AcBpo0iQh0oMpf8A==}
@@ -3191,6 +3211,10 @@ packages:
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
+  buffer-layout@1.2.2:
+    resolution: {integrity: sha512-kWSuLN694+KTk8SrYvCqwP2WcgQjoRCiF5b4QDvkkz8EmgD+aWAIceGFKMIAdmF/pH+vpgNV3d3kAKorcdAmWA==}
+    engines: {node: '>=4.5'}
+
   buffer-xor@1.0.3:
     resolution: {integrity: sha512-571s0T7nZWK6vB67HI5dyUF7wXiNcfaPPPTl6zYCNApANjIvYJTg7hlud/+cJpdAhS7dVzqMLmfhfHR3rAcOjQ==}
 
@@ -4985,6 +5009,9 @@ packages:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
 
+  pako@2.1.0:
+    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -5619,6 +5646,9 @@ packages:
         optional: true
       babel-plugin-macros:
         optional: true
+
+  superstruct@0.15.5:
+    resolution: {integrity: sha512-4AOeU+P5UuE/4nOUkmcQdW5y7i9ndt1cQd/3iUe+LTz3RxESf/W/5lg4B74HbDMMv8PHnPnGCQFH45kBcrQYoQ==}
 
   superstruct@1.0.4:
     resolution: {integrity: sha512-7JpaAoX2NGyoFlI9NBh66BQXGONc+uE+MRS5i2iOBKuS4e+ccgMDjATgZldkah+33DakBxDHiss9kvUcGAO8UQ==}
@@ -6466,6 +6496,35 @@ snapshots:
       - use-sync-external-store
       - utf-8-validate
       - zod
+
+  '@coral-xyz/anchor-errors@0.31.1': {}
+
+  '@coral-xyz/anchor@0.32.1(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@coral-xyz/anchor-errors': 0.31.1
+      '@coral-xyz/borsh': 0.31.1(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
+      '@noble/hashes': 1.8.0
+      '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      bn.js: 5.2.2
+      bs58: 4.0.1
+      buffer-layout: 1.2.2
+      camelcase: 6.3.0
+      cross-fetch: 3.2.0
+      eventemitter3: 4.0.7
+      pako: 2.1.0
+      superstruct: 0.15.5
+      toml: 3.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - typescript
+      - utf-8-validate
+
+  '@coral-xyz/borsh@0.31.1(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))':
+    dependencies:
+      '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      bn.js: 5.2.2
+      buffer-layout: 1.2.2
 
   '@ecies/ciphers@0.2.5(@noble/ciphers@1.3.0)':
     dependencies:
@@ -7942,13 +8001,15 @@ snapshots:
     dependencies:
       '@solana/kit': 3.0.3(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
 
-  '@solana-program/token-2022@0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
+  '@solana-program/token-2022@0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))':
     dependencies:
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/sysvars': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
 
-  '@solana-program/token-2022@0.6.1(@solana/kit@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
+  '@solana-program/token-2022@0.6.1(@solana/kit@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))':
     dependencies:
       '@solana/kit': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/sysvars': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
 
   '@solana-program/token@0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))':
     dependencies:
@@ -9306,11 +9367,11 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@solana/wallet-adapter-trezor@0.1.6(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-trezor@0.1.6(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/wallet-adapter-base': 0.9.27(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@trezor/connect-web': 9.6.4(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@trezor/connect-web': 9.6.4(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       buffer: 6.0.3
     transitivePeerDependencies:
       - '@solana/sysvars'
@@ -9374,7 +9435,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@solana/wallet-adapter-wallets@0.19.37(@babel/runtime@7.28.4)(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@types/react@19.2.7)(bs58@6.0.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@solana/wallet-adapter-wallets@0.19.37(@babel/runtime@7.28.4)(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@types/react@19.2.7)(bs58@6.0.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.14(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.17(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
@@ -9407,7 +9468,7 @@ snapshots:
       '@solana/wallet-adapter-tokenary': 0.1.16(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-tokenpocket': 0.4.23(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-torus': 0.11.32(@babel/runtime@7.28.4)(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@solana/wallet-adapter-trezor': 0.1.6(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@solana/wallet-adapter-trezor': 0.1.6(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-trust': 0.1.17(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-unsafe-burner': 0.1.11(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-walletconnect': 0.1.21(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -9831,12 +9892,12 @@ snapshots:
       - react-native
       - utf-8-validate
 
-  '@trezor/blockchain-link@2.5.4(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@trezor/blockchain-link@2.5.4(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/stake': 0.2.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
-      '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
+      '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)
       '@stellar/stellar-sdk': 13.3.0
@@ -9886,9 +9947,9 @@ snapshots:
       - expo-localization
       - react-native
 
-  '@trezor/connect-web@9.6.4(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@trezor/connect-web@9.6.4(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
-      '@trezor/connect': 9.6.4(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@trezor/connect': 9.6.4(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@trezor/connect-common': 0.4.4(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)
       '@trezor/utils': 9.4.4(tslib@2.8.1)
       '@trezor/websocket-client': 1.2.4(bufferutil@4.0.9)(tslib@2.8.1)(utf-8-validate@5.0.10)
@@ -9908,7 +9969,7 @@ snapshots:
       - utf-8-validate
       - ws
 
-  '@trezor/connect@9.6.4(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@trezor/connect@9.6.4(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@ethereumjs/common': 10.1.0
       '@ethereumjs/tx': 10.1.0
@@ -9919,9 +9980,9 @@ snapshots:
       '@solana-program/compute-budget': 0.8.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/system': 0.7.0(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/token': 0.5.1(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
-      '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
+      '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@trezor/blockchain-link': 2.5.4(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@trezor/blockchain-link': 2.5.4(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@trezor/blockchain-link-types': 1.4.4(tslib@2.8.1)
       '@trezor/blockchain-link-utils': 1.4.4(bufferutil@4.0.9)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@trezor/connect-analytics': 1.3.6(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(tslib@2.8.1)
@@ -11790,6 +11851,8 @@ snapshots:
   buffer-equal-constant-time@1.0.1: {}
 
   buffer-from@1.1.2: {}
+
+  buffer-layout@1.2.2: {}
 
   buffer-xor@1.0.3: {}
 
@@ -13846,7 +13909,7 @@ snapshots:
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/curves': 1.8.1
-      '@noble/hashes': 1.7.1
+      '@noble/hashes': 1.8.0
       '@scure/bip32': 1.6.2
       '@scure/bip39': 1.5.4
       abitype: 1.0.8(typescript@5.9.3)(zod@3.25.76)
@@ -13932,6 +13995,8 @@ snapshots:
       p-limit: 3.1.0
 
   p-try@2.2.0: {}
+
+  pako@2.1.0: {}
 
   parent-module@1.0.1:
     dependencies:
@@ -14738,6 +14803,8 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.28.5
 
+  superstruct@0.15.5: {}
+
   superstruct@1.0.4: {}
 
   superstruct@2.0.2: {}
@@ -15236,13 +15303,13 @@ snapshots:
       bufferutil: 4.0.9
       utf-8-validate: 5.0.10
 
-  x402-next@0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+  x402-next@0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       '@coinbase/cdp-sdk': 1.40.1(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/kit': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       next: 16.0.7(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       viem: 2.42.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      x402: 0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      x402: 0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       zod: 3.25.76
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -15283,12 +15350,12 @@ snapshots:
       - utf-8-validate
       - ws
 
-  x402@0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+  x402@0.7.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@19.2.0))(@types/react@19.2.7)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0(@babel/core@7.28.5)(@types/react@19.2.7)(bufferutil@4.0.9)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       '@scure/base': 1.2.6
       '@solana-program/compute-budget': 0.11.0(@solana/kit@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
       '@solana-program/token': 0.9.0(@solana/kit@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
-      '@solana-program/token-2022': 0.6.1(@solana/kit@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))
+      '@solana-program/token-2022': 0.6.1(@solana/kit@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))
       '@solana/kit': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/transaction-confirmation': 5.1.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-standard-features': 1.3.0
