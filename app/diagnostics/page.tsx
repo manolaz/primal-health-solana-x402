@@ -37,20 +37,18 @@ export default function DiagnosticsPage() {
     setErrorMessage('');
 
     try {
-      // Validate form data
-      const healthData: ExtendedHealthData = {
-        ...formData as ExtendedHealthData,
-        timestamp: Date.now(),
-      };
-
-      validateExtendedHealthData(healthData);
-
       // Create patient DID if not exists
       const patientManager = new PatientDIDManager();
       const patientDID = patientManager.getDID();
 
-      // Add patient DID to data
-      healthData.patientDID = patientDID;
+      // Validate form data
+      const healthData: ExtendedHealthData = {
+        ...formData as ExtendedHealthData,
+        timestamp: Date.now(),
+        patientDID: patientDID,
+      };
+
+      validateExtendedHealthData(healthData);
 
       // Generate encryption key if not set
       const key = encryptionKey || generateAESKey();
