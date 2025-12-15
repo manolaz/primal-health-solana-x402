@@ -69,7 +69,7 @@ const insurancePaymentMiddleware = paymentMiddleware(
   },
 )
 
-export const middleware = (req: NextRequest) => {
+export const proxy = (req: NextRequest) => {
   const path = req.nextUrl.pathname
 
   // Route to appropriate middleware based on path
