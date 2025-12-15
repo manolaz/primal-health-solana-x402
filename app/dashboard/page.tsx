@@ -7,45 +7,8 @@ import { PrivacySettingsComponent } from '@/components/privacy-settings';
 import { useSolana } from '@/components/solana-provider';
 import { WalletConnectButton } from '@/components/wallet-connect-button';
 
-// Mock data for development - in production this would come from Solana queries
-const mockClaims: InsuranceClaim[] = [
-  {
-    claimId: 'claim-001',
-    patientDID: 'did:solana:mainnet:11111111111111111111111111111112',
-    healthDataHash: 'hash123',
-    encryptedHealthData: 'encrypted_data_123',
-    insuranceProviderDID: 'did:solana:mainnet:insurance_provider_001',
-    claimAmount: 500,
-    currency: 'SOL',
-    status: 'paid',
-    timestamp: Date.now() - 86400000, // 1 day ago
-    verificationTimestamp: Date.now() - 43200000, // 12 hours ago
-    paymentTransactionId: 'tx_abc123',
-  },
-  {
-    claimId: 'claim-002',
-    patientDID: 'did:solana:mainnet:11111111111111111111111111111112',
-    healthDataHash: 'hash456',
-    encryptedHealthData: 'encrypted_data_456',
-    insuranceProviderDID: 'did:solana:mainnet:insurance_provider_002',
-    claimAmount: 750,
-    currency: 'SOL',
-    status: 'verified',
-    timestamp: Date.now() - 172800000, // 2 days ago
-    verificationTimestamp: Date.now() - 86400000, // 1 day ago
-  },
-  {
-    claimId: 'claim-003',
-    patientDID: 'did:solana:mainnet:11111111111111111111111111111112',
-    healthDataHash: 'hash789',
-    encryptedHealthData: 'encrypted_data_789',
-    insuranceProviderDID: 'did:solana:mainnet:insurance_provider_001',
-    claimAmount: 300,
-    currency: 'SOL',
-    status: 'pending',
-    timestamp: Date.now() - 3600000, // 1 hour ago
-  },
-];
+// Mock data removed
+// const mockClaims: InsuranceClaim[] = ...
 
 const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -76,18 +39,32 @@ export default function DashboardPage ()
       const did = `did:solana:devnet:${ selectedAccount.address }`;
       setPatientDID( did );
 
-      // Load claims (mock data for now)
-      // In production, we would fetch claims associated with this DID
-      setTimeout( () =>
-      {
-        setClaims( mockClaims );
-        setIsLoading( false );
-      }, 1000 );
+      // Load claims
+      fetchClaims( did );
     } else
     {
       setIsLoading( false );
     }
   }, [ isConnected, selectedAccount ] );
+
+  const fetchClaims = async ( did: string ) =>
+  {
+    try
+    {
+      const response = await fetch( `/api/insurance/claim?patientDID=${ did }` );
+      if ( response.ok )
+      {
+        const data = await response.json();
+        setClaims( data );
+      }
+    } catch ( error )
+    {
+      console.error( "Failed to load claims", error );
+    } finally
+    {
+      setIsLoading( false );
+    }
+  };
 
   const formatDate = ( timestamp: number ) =>
   {
@@ -167,8 +144,8 @@ export default function DashboardPage ()
                 <button
                   onClick={ () => setActiveTab( 'claims' ) }
                   className={ `px-6 py-4 font-medium text-sm ${ activeTab === 'claims'
-                      ? 'border-b-2 border-blue-600 text-blue-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                    ? 'border-b-2 border-blue-600 text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
                     }` }
                 >
                   Insurance Claims
@@ -176,8 +153,8 @@ export default function DashboardPage ()
                 <button
                   onClick={ () => setActiveTab( 'privacy' ) }
                   className={ `px-6 py-4 font-medium text-sm ${ activeTab === 'privacy'
-                      ? 'border-b-2 border-blue-600 text-blue-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                    ? 'border-b-2 border-blue-600 text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
                     }` }
                 >
                   Privacy & Consent

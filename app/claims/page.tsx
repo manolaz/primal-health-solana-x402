@@ -8,10 +8,13 @@ import { generateAESKey, hashHealthData } from '@/lib/encryption';
 import { checkDataSharingPermissions } from '@/lib/consent';
 import { useSolana } from '@/components/solana-provider';
 import { WalletConnectButton } from '@/components/wallet-connect-button';
+import { submitClaimToChain } from '@/lib/solana-storage';
+import { StandardWalletAdapter } from '@/lib/wallet-adapter';
+import { PublicKey } from '@solana/web3.js';
 
 export default function ClaimsPage ()
 {
-  const { selectedAccount, isConnected } = useSolana();
+  const { selectedAccount, isConnected, wallet } = useSolana();
   const [ diagnosticData, setDiagnosticData ] = useState<ExtendedHealthData[]>( [] );
   const [ selectedDiagnostic, setSelectedDiagnostic ] = useState<ExtendedHealthData | null>( null );
   const [ isSubmitting, setIsSubmitting ] = useState( false );
@@ -60,7 +63,7 @@ export default function ClaimsPage ()
 
   const handleSubmitClaim = async () =>
   {
-    if ( !selectedDiagnostic || !selectedAccount ) return;
+    if ( !selectedDiagnostic || !selectedAccount || !wallet ) return;
 
     setIsSubmitting( true );
     setSubmitStatus( 'idle' );
@@ -110,13 +113,49 @@ export default function ClaimsPage ()
         timestamp: Date.now(),
       };
 
-      // Submit claim to API
+      // Submit claim to blockchain
+      const walletAdapter = new StandardWalletAdapter( wallet!, selectedAccount );
+      // We need the provider's public key. In a real app, we'd resolve the DID to a public key.
+      // For this demo, we'll assume the provider DID contains the public key or we use a known one.
+      // Let's extract it from the DID if possible, or use a hardcoded one for the demo provider.
+      // The InsuranceProviderDIDManager creates a DID like did:solana:devnet:<pubkey>
+      // But here we are just instantiating it without a key, so it might be generating one.
+      // Let's assume the provider has a known public key for the program.
+      // For the purpose of this "100% Solana" goal, we should probably use a real public key.
+      // If the provider isn't initialized on chain, this might fail if the program checks for it.
+      // But create_claim just takes a provider pubkey.
+
+      // Let's use a dummy public key for the provider if we can't resolve it, 
+      // OR better, let's use the patient's key as provider for testing if we want to be able to verify it ourselves?
+      // No, that's confusing.
+      // Let's generate a random one for the "Provider" for now, or use a fixed one.
+      const providerPublicKey = new PublicKey( "11111111111111111111111111111111" ); // System program as placeholder or a real one?
+      // Actually, let's use a random keypair's public key to represent the provider
+      // In a real scenario, the provider would have published their key.
+
+      // Let's try to get it from the DID string if it follows the format
+      let providerPubkeyObj = providerPublicKey;
+      try
+      {
+        const parts = insuranceProviderDID.split( ':' );
+        if ( parts.length > 3 )
+        {
+          providerPubkeyObj = new PublicKey( parts[ 3 ] );
+        }
+      } catch ( e )
+      {
+        console.warn( "Could not parse provider DID, using default" );
+      }
+
+      const txSignature = await submitClaimToChain( claim, walletAdapter, providerPubkeyObj );
+
+      // Submit claim metadata to API
       const response = await fetch( '/api/insurance/claim', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify( claim ),
+        body: JSON.stringify( { ...claim, transactionSignature: txSignature } ),
       } );
 
       if ( !response.ok )

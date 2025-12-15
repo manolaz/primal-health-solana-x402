@@ -4,9 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ExtendedHealthData, validateExtendedHealthData } from '@/lib/health-models';
 import { PatientDIDManager } from '@/lib/did';
-import { generateAESKey, encryptHealthDataForBlockchain, hashHealthData } from '@/lib/encryption';
+import { generateAESKey, encryptHealthDataForBlockchain, hashHealthData, generatePatientDID } from '@/lib/encryption';
 import { storeHealthDataOnChain, HealthDataStorageService } from '@/lib/solana-storage';
-import { Keypair } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 import { useSolana } from '@/components/solana-provider';
 import { WalletConnectButton } from '@/components/wallet-connect-button';
 import { StandardWalletAdapter } from '@/lib/wallet-adapter';
@@ -53,9 +53,8 @@ export default function DiagnosticsPage ()
 
     try
     {
-      // Create patient DID from wallet public key (mock implementation for now)
-      // In a real app, we would derive DID from the wallet's public key
-      const patientDID = `did:solana:devnet:${ selectedAccount.address }`;
+      // Create patient DID from wallet public key
+      const patientDID = generatePatientDID( new PublicKey( selectedAccount.address ) );
 
       // Validate form data
       const healthData: ExtendedHealthData = {
