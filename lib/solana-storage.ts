@@ -5,8 +5,10 @@ import
   Keypair,
   LAMPORTS_PER_SOL,
   SystemProgram,
+  Transaction,
+  VersionedTransaction,
 } from '@solana/web3.js';
-import { Program, AnchorProvider, Idl, BN, Wallet } from '@coral-xyz/anchor';
+import { Program, AnchorProvider, Idl, BN } from '@coral-xyz/anchor';
 import { encryptHealthDataForBlockchain, decryptHealthDataFromBlockchain, hashHealthData } from './encryption';
 import { MinimalHealthData, InsuranceClaim } from './health-models';
 
@@ -175,6 +177,43 @@ const IDL: Idl = {
   ]
 };
 
+class InMemoryWallet
+{
+  constructor ( readonly payer: Keypair ) { }
+
+  async signTransaction<T extends Transaction | VersionedTransaction> ( tx: T ): Promise<T>
+  {
+    if ( tx instanceof Transaction )
+    {
+      tx.partialSign( this.payer );
+    } else
+    {
+      tx.sign( [ this.payer ] );
+    }
+    return tx;
+  }
+
+  async signAllTransactions<T extends Transaction | VersionedTransaction> ( txs: T[] ): Promise<T[]>
+  {
+    return txs.map( ( t ) =>
+    {
+      if ( t instanceof Transaction )
+      {
+        t.partialSign( this.payer );
+      } else
+      {
+        t.sign( [ this.payer ] );
+      }
+      return t;
+    } );
+  }
+
+  get publicKey (): PublicKey
+  {
+    return this.payer.publicKey;
+  }
+}
+
 // Connection singleton
 let connection: Connection;
 
@@ -199,7 +238,7 @@ export class HealthDataStorageService
 
   private getProgram ( signer: Keypair ): Program
   {
-    const wallet = new Wallet( signer );
+    const wallet = new InMemoryWallet( signer );
     const provider = new AnchorProvider( this.connection, wallet, {
       preflightCommitment: 'confirmed',
     } );
@@ -261,7 +300,7 @@ export class HealthDataStorageService
   // Get Patient Account
   async getPatientAccount ( authority: PublicKey ): Promise<{ did: string } | null>
   {
-    const dummyWallet = new Wallet( Keypair.generate() );
+    const dummyWallet = new InMemoryWallet( Keypair.generate() );
     const provider = new AnchorProvider( this.connection, dummyWallet, {
       preflightCommitment: 'confirmed',
     } );
@@ -319,7 +358,7 @@ export class HealthDataStorageService
   ): Promise<MinimalHealthData | null>
   {
     // For reading, we can use a dummy wallet since we don't need to sign
-    const dummyWallet = new Wallet( Keypair.generate() );
+    const dummyWallet = new InMemoryWallet( Keypair.generate() );
     const provider = new AnchorProvider( this.connection, dummyWallet, {
       preflightCommitment: 'confirmed',
     } );
@@ -379,7 +418,7 @@ export class HealthDataStorageService
   // Verify insurance claim exists
   async verifyClaimExists ( claimId: string, patient: PublicKey ): Promise<boolean>
   {
-    const dummyWallet = new Wallet( Keypair.generate() );
+    const dummyWallet = new InMemoryWallet( Keypair.generate() );
     const provider = new AnchorProvider( this.connection, dummyWallet, {
       preflightCommitment: 'confirmed',
     } );
