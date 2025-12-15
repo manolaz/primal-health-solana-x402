@@ -14,11 +14,11 @@ import { MinimalHealthData, InsuranceClaim } from './health-models';
 
 // Solana configuration
 const SOLANA_RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com';
-const PROGRAM_ID = new PublicKey( '6HD1Jm5jRp8qw6hgVhCbp4KCVZkYptZkf7Ue8TJ2Sr5q' );
+const PROGRAM_ID = new PublicKey( '2LjMTbA2Z3ZftCr8UCJ3c5cauBq48NRBbXbiy6Zkkhao' );
 
 // IDL Definition
 const IDL: Idl = {
-  "address": "6HD1Jm5jRp8qw6hgVhCbp4KCVZkYptZkf7Ue8TJ2Sr5q",
+  "address": "2LjMTbA2Z3ZftCr8UCJ3c5cauBq48NRBbXbiy6Zkkhao",
   "metadata": {
     "name": "primal_health_solana_program",
     "version": "0.1.0",

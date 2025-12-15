@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("6HD1Jm5jRp8qw6hgVhCbp4KCVZkYptZkf7Ue8TJ2Sr5q");
+declare_id!("2LjMTbA2Z3ZftCr8UCJ3c5cauBq48NRBbXbiy6Zkkhao");
 
 #[program]
 pub mod primal_health_solana_program {
