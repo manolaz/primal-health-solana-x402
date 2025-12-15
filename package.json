@@ -19,20 +19,30 @@
     "starter"
   ],
   "dependencies": {
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
+    "@solana/web3.js": "^1.98.4",
+    "@types/bs58": "^5.0.0",
+    "@types/crypto-js": "^4.2.2",
+    "bs58": "^6.0.0",
+    "crypto-js": "^4.2.0",
     "next": "16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "viem": "^2.38.5",
-    "x402-next": "^0.7.1"
+    "tweetnacl": "^1.0.3",
+    "viem": "^2.42.0",
+    "x402-next": "^0.7.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^20.19.27",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.2",
     "eslint-config-next": "16.0.0",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
   }
 }
