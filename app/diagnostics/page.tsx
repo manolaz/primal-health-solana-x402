@@ -5,38 +5,43 @@ import Link from 'next/link';
 import { ExtendedHealthData, validateExtendedHealthData } from '@/lib/health-models';
 import { PatientDIDManager } from '@/lib/did';
 import { generateAESKey, encryptHealthDataForBlockchain, hashHealthData } from '@/lib/encryption';
-import { storeHealthDataOnChain } from '@/lib/solana-storage';
+import { storeHealthDataOnChain, HealthDataStorageService } from '@/lib/solana-storage';
 import { Keypair } from '@solana/web3.js';
 
-export default function DiagnosticsPage() {
-  const [formData, setFormData] = useState<Partial<ExtendedHealthData>>({
+export default function DiagnosticsPage ()
+{
+  const [ formData, setFormData ] = useState<Partial<ExtendedHealthData>>( {
     timestamp: Date.now(),
     sharingConsent: false,
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [encryptionKey, setEncryptionKey] = useState('');
+  } );
+  const [ isSubmitting, setIsSubmitting ] = useState( false );
+  const [ submitStatus, setSubmitStatus ] = useState<'idle' | 'success' | 'error'>( 'idle' );
+  const [ errorMessage, setErrorMessage ] = useState( '' );
+  const [ encryptionKey, setEncryptionKey ] = useState( '' );
 
-  const handleInputChange = (field: keyof ExtendedHealthData, value: any) => {
-    setFormData(prev => ({
+  const handleInputChange = ( field: keyof ExtendedHealthData, value: any ) =>
+  {
+    setFormData( prev => ( {
       ...prev,
-      [field]: value
-    }));
+      [ field ]: value
+    } ) );
   };
 
-  const generateNewKey = () => {
+  const generateNewKey = () =>
+  {
     const key = generateAESKey();
-    setEncryptionKey(key);
+    setEncryptionKey( key );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async ( e: React.FormEvent ) =>
+  {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
-    setErrorMessage('');
+    setIsSubmitting( true );
+    setSubmitStatus( 'idle' );
+    setErrorMessage( '' );
 
-    try {
+    try
+    {
       // Create patient DID if not exists
       const patientManager = new PatientDIDManager();
       const patientDID = patientManager.getDID();
@@ -48,11 +53,11 @@ export default function DiagnosticsPage() {
         patientDID: patientDID,
       };
 
-      validateExtendedHealthData(healthData);
+      validateExtendedHealthData( healthData );
 
       // Generate encryption key if not set
       const key = encryptionKey || generateAESKey();
-      setEncryptionKey(key);
+      setEncryptionKey( key );
 
       // Create minimal data for blockchain
       const minimalData = {
@@ -64,17 +69,37 @@ export default function DiagnosticsPage() {
 
       // Encrypt and store on Solana
       const signer = Keypair.generate(); // In real app, use user's wallet
-      const result = await storeHealthDataOnChain(minimalData, key, signer);
 
-      setSubmitStatus('success');
-      console.log('Health data stored successfully:', result);
+      // Fund the signer for demo
+      const storageService = new HealthDataStorageService();
+      try
+      {
+        await storageService.requestAirdrop( signer.publicKey, 1 );
+      } catch ( e )
+      {
+        console.warn( "Airdrop failed", e );
+      }
 
-    } catch (error) {
-      setSubmitStatus('error');
-      setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
-      console.error('Error submitting health data:', error);
-    } finally {
-      setIsSubmitting(false);
+      const result = await storeHealthDataOnChain( minimalData, key, signer );
+
+      // Index data in API
+      await fetch( '/api/diagnostics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( healthData )
+      } );
+
+      setSubmitStatus( 'success' );
+      console.log( 'Health data stored successfully:', result );
+
+    } catch ( error )
+    {
+      setSubmitStatus( 'error' );
+      setErrorMessage( error instanceof Error ? error.message : 'An error occurred' );
+      console.error( 'Error submitting health data:', error );
+    } finally
+    {
+      setIsSubmitting( false );
     }
   };
 
@@ -97,7 +122,7 @@ export default function DiagnosticsPage() {
             </p>
           </div>
 
-          {submitStatus === 'success' && (
+          { submitStatus === 'success' && (
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
               <div className="flex items-center">
                 <span className="text-green-600 text-xl mr-2">✓</span>
@@ -107,20 +132,20 @@ export default function DiagnosticsPage() {
                 Your encrypted health data has been stored on Solana. You can now proceed to file an insurance claim.
               </p>
             </div>
-          )}
+          ) }
 
-          {submitStatus === 'error' && (
+          { submitStatus === 'error' && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-center">
                 <span className="text-red-600 text-xl mr-2">✕</span>
                 <span className="text-red-800 font-medium">Submission failed</span>
               </div>
-              <p className="text-red-700 text-sm mt-1">{errorMessage}</p>
+              <p className="text-red-700 text-sm mt-1">{ errorMessage }</p>
             </div>
-          )}
+          ) }
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Disease/Test Information */}
+          <form onSubmit={ handleSubmit } className="space-y-6">
+            {/* Disease/Test Information */ }
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Diagnostic Information</h3>
 
@@ -131,8 +156,8 @@ export default function DiagnosticsPage() {
                 <input
                   type="text"
                   required
-                  value={formData.disease || ''}
-                  onChange={(e) => handleInputChange('disease', e.target.value)}
+                  value={ formData.disease || '' }
+                  onChange={ ( e ) => handleInputChange( 'disease', e.target.value ) }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., COVID-19, Diabetes, Blood Pressure"
                 />
@@ -145,8 +170,8 @@ export default function DiagnosticsPage() {
                 <input
                   type="text"
                   required
-                  value={formData.testType || ''}
-                  onChange={(e) => handleInputChange('testType', e.target.value)}
+                  value={ formData.testType || '' }
+                  onChange={ ( e ) => handleInputChange( 'testType', e.target.value ) }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., PCR Test, Blood Test, X-Ray"
                 />
@@ -158,8 +183,8 @@ export default function DiagnosticsPage() {
                 </label>
                 <select
                   required
-                  value={formData.result || ''}
-                  onChange={(e) => handleInputChange('result', e.target.value as 'positive' | 'negative' | 'inconclusive')}
+                  value={ formData.result || '' }
+                  onChange={ ( e ) => handleInputChange( 'result', e.target.value as 'positive' | 'negative' | 'inconclusive' ) }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select result...</option>
@@ -175,8 +200,8 @@ export default function DiagnosticsPage() {
                 </label>
                 <input
                   type="text"
-                  value={formData.labName || ''}
-                  onChange={(e) => handleInputChange('labName', e.target.value)}
+                  value={ formData.labName || '' }
+                  onChange={ ( e ) => handleInputChange( 'labName', e.target.value ) }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., LabCorp, Quest Diagnostics"
                 />
@@ -190,8 +215,8 @@ export default function DiagnosticsPage() {
                   type="number"
                   min="0"
                   max="100"
-                  value={formData.confidence || ''}
-                  onChange={(e) => handleInputChange('confidence', parseInt(e.target.value))}
+                  value={ formData.confidence || '' }
+                  onChange={ ( e ) => handleInputChange( 'confidence', parseInt( e.target.value ) ) }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="0-100"
                 />
@@ -202,16 +227,16 @@ export default function DiagnosticsPage() {
                   Additional Notes (Optional)
                 </label>
                 <textarea
-                  value={formData.notes || ''}
-                  onChange={(e) => handleInputChange('notes', e.target.value)}
-                  rows={3}
+                  value={ formData.notes || '' }
+                  onChange={ ( e ) => handleInputChange( 'notes', e.target.value ) }
+                  rows={ 3 }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Any additional information..."
                 />
               </div>
             </div>
 
-            {/* Privacy Settings */}
+            {/* Privacy Settings */ }
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Privacy & Consent</h3>
 
@@ -223,8 +248,8 @@ export default function DiagnosticsPage() {
                   type="number"
                   min="1"
                   max="365"
-                  value={formData.dataRetentionPeriod || 90}
-                  onChange={(e) => handleInputChange('dataRetentionPeriod', parseInt(e.target.value))}
+                  value={ formData.dataRetentionPeriod || 90 }
+                  onChange={ ( e ) => handleInputChange( 'dataRetentionPeriod', parseInt( e.target.value ) ) }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -233,8 +258,8 @@ export default function DiagnosticsPage() {
                 <input
                   type="checkbox"
                   id="consent"
-                  checked={formData.sharingConsent || false}
-                  onChange={(e) => handleInputChange('sharingConsent', e.target.checked)}
+                  checked={ formData.sharingConsent || false }
+                  onChange={ ( e ) => handleInputChange( 'sharingConsent', e.target.checked ) }
                   className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="consent" className="text-sm text-gray-700">
@@ -244,7 +269,7 @@ export default function DiagnosticsPage() {
               </div>
             </div>
 
-            {/* Encryption Settings */}
+            {/* Encryption Settings */ }
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Encryption</h3>
 
@@ -255,15 +280,15 @@ export default function DiagnosticsPage() {
                 <div className="flex space-x-2">
                   <input
                     type="text"
-                    value={encryptionKey}
-                    onChange={(e) => setEncryptionKey(e.target.value)}
+                    value={ encryptionKey }
+                    onChange={ ( e ) => setEncryptionKey( e.target.value ) }
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
                     placeholder="Auto-generated key..."
                     readOnly
                   />
                   <button
                     type="button"
-                    onClick={generateNewKey}
+                    onClick={ generateNewKey }
                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     Generate
@@ -277,10 +302,10 @@ export default function DiagnosticsPage() {
 
             <button
               type="submit"
-              disabled={isSubmitting || !formData.sharingConsent}
+              disabled={ isSubmitting || !formData.sharingConsent }
               className="w-full py-3 px-4 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Health Data 🔒'}
+              { isSubmitting ? 'Submitting...' : 'Submit Health Data 🔒' }
             </button>
           </form>
         </div>

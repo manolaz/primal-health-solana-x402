@@ -1,11 +1,11 @@
 import
-  {
-    Connection,
-    PublicKey,
-    Keypair,
-    LAMPORTS_PER_SOL,
-    SystemProgram,
-  } from '@solana/web3.js';
+{
+  Connection,
+  PublicKey,
+  Keypair,
+  LAMPORTS_PER_SOL,
+  SystemProgram,
+} from '@solana/web3.js';
 import { Program, AnchorProvider, Idl, BN, Wallet } from '@coral-xyz/anchor';
 import { encryptHealthDataForBlockchain, decryptHealthDataFromBlockchain, hashHealthData } from './encryption';
 import { MinimalHealthData, InsuranceClaim } from './health-models';
@@ -205,7 +205,58 @@ export class HealthDataStorageService
     } );
     return new Program( IDL, provider );
   }
+  // Initialize Patient Account
+  async initializePatient (
+    did: string,
+    signer: Keypair
+  ): Promise<string>
+  {
+    const program = this.getProgram( signer );
 
+    const [ patientPDA ] = PublicKey.findProgramAddressSync(
+      [ Buffer.from( "patient" ), signer.publicKey.toBuffer() ],
+      program.programId
+    );
+
+    const tx = await program.methods
+      .initializePatient( did )
+      .accounts( {
+        patientAccount: patientPDA,
+        authority: signer.publicKey,
+        systemProgram: SystemProgram.programId,
+      } )
+      .signers( [ signer ] )
+      .rpc();
+
+    return tx;
+  }
+
+  // Initialize Provider Account
+  async initializeProvider (
+    did: string,
+    name: string,
+    signer: Keypair
+  ): Promise<string>
+  {
+    const program = this.getProgram( signer );
+
+    const [ providerPDA ] = PublicKey.findProgramAddressSync(
+      [ Buffer.from( "provider" ), signer.publicKey.toBuffer() ],
+      program.programId
+    );
+
+    const tx = await program.methods
+      .initializeProvider( did, name )
+      .accounts( {
+        providerAccount: providerPDA,
+        authority: signer.publicKey,
+        systemProgram: SystemProgram.programId,
+      } )
+      .signers( [ signer ] )
+      .rpc();
+
+    return tx;
+  }
   // Store encrypted health data on Solana
   async storeHealthData (
     healthData: MinimalHealthData,
