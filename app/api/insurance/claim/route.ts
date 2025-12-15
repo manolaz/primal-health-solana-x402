@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { InsuranceClaim, validateInsuranceClaim } from '@/lib/health-models';
-import { submitClaimToChain } from '@/lib/solana-storage';
+import { submitClaimToChain, HealthDataStorageService } from '@/lib/solana-storage';
 import { PatientDIDManager, InsuranceProviderDIDManager } from '@/lib/did';
 import { Keypair } from '@solana/web3.js';
 
 // POST /api/insurance/claim - Submit insurance claim
-export async function POST(request: NextRequest) {
-  try {
+export async function POST ( request: NextRequest )
+{
+  try
+  {
     const body = await request.json();
 
     // Prepare claim data with server-set fields
@@ -17,11 +19,12 @@ export async function POST(request: NextRequest) {
     };
 
     // Validate claim data
-    const claim: InsuranceClaim = validateInsuranceClaim(claimData);
+    const claim: InsuranceClaim = validateInsuranceClaim( claimData );
 
     // Verify patient DID exists (in production, check against registry)
     const patientManager = new PatientDIDManager();
-    if (claim.patientDID !== patientManager.getDID()) {
+    if ( claim.patientDID !== patientManager.getDID() )
+    {
       return NextResponse.json(
         { error: 'Invalid patient DID' },
         { status: 400 }
@@ -36,7 +39,8 @@ export async function POST(request: NextRequest) {
     );
 
     // Verify insurance provider DID matches
-    if (claim.insuranceProviderDID !== insuranceManager.getDID()) {
+    if ( claim.insuranceProviderDID !== insuranceManager.getDID() )
+    {
       return NextResponse.json(
         { error: 'Invalid insurance provider DID' },
         { status: 400 }
@@ -45,18 +49,30 @@ export async function POST(request: NextRequest) {
 
     // Submit claim to blockchain
     const signer = Keypair.generate(); // In production, use authenticated signer
-    const txSignature = await submitClaimToChain(claim, signer);
 
-    return NextResponse.json({
+    // Fund the signer for the demo
+    const storageService = new HealthDataStorageService();
+    try
+    {
+      await storageService.requestAirdrop( signer.publicKey, 1 );
+    } catch ( e )
+    {
+      console.warn( "Airdrop failed", e );
+    }
+
+    const txSignature = await submitClaimToChain( claim, signer );
+
+    return NextResponse.json( {
       success: true,
       claimId: claim.claimId,
       transactionSignature: txSignature,
       status: 'submitted',
       message: 'Insurance claim submitted successfully. Awaiting verification.',
-    });
+    } );
 
-  } catch (error) {
-    console.error('Error submitting insurance claim:', error);
+  } catch ( error )
+  {
+    console.error( 'Error submitting insurance claim:', error );
     return NextResponse.json(
       {
         error: 'Failed to submit insurance claim',
@@ -68,12 +84,15 @@ export async function POST(request: NextRequest) {
 }
 
 // GET /api/insurance/claim - Get claim status
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const claimId = searchParams.get('claimId');
+export async function GET ( request: NextRequest )
+{
+  try
+  {
+    const { searchParams } = new URL( request.url );
+    const claimId = searchParams.get( 'claimId' );
 
-    if (!claimId) {
+    if ( !claimId )
+    {
       return NextResponse.json(
         { error: 'Claim ID is required' },
         { status: 400 }
@@ -91,10 +110,11 @@ export async function GET(request: NextRequest) {
       message: 'Claim verified and payment processed',
     };
 
-    return NextResponse.json(mockStatus);
+    return NextResponse.json( mockStatus );
 
-  } catch (error) {
-    console.error('Error getting claim status:', error);
+  } catch ( error )
+  {
+    console.error( 'Error getting claim status:', error );
     return NextResponse.json(
       { error: 'Failed to get claim status' },
       { status: 500 }
