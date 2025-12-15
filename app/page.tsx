@@ -1,10 +1,20 @@
+"use client";
+
+import { WalletConnectButton } from "@/components/wallet-connect-button";
+import { MemoCard } from "@/components/memo-card";
+
 import Link from 'next/link'
 
-export default function Home() {
+export default function Home ()
+{
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 font-sans">
-      <main className="flex min-h-screen w-full max-w-4xl flex-col items-center justify-center py-16 px-8">
-        <div className="bg-white rounded-2xl shadow-2xl p-12 text-center max-w-2xl">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 font-sans">
+      <nav className="flex justify-end p-6">
+        <WalletConnectButton />
+      </nav>
+
+      <main className="flex flex-col items-center justify-center px-4 pb-16">
+        <div className="bg-white rounded-2xl shadow-2xl p-12 text-center max-w-2xl w-full mb-8">
           <div className="mb-8">
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
               Primal Health
@@ -53,6 +63,10 @@ export default function Home() {
           <div className="mt-8 text-xs text-gray-400">
             Built on Solana Devnet • X402 Protocol • Privacy-First
           </div>
+        </div>
+
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6">
+          <MemoCard />
         </div>
       </main>
     </div>
