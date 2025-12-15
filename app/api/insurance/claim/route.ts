@@ -9,8 +9,15 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
+    // Prepare claim data with server-set fields
+    const claimData = {
+      ...body,
+      timestamp: Date.now(),
+      status: body.status || 'pending',
+    };
+
     // Validate claim data
-    const claim: InsuranceClaim = validateInsuranceClaim(body);
+    const claim: InsuranceClaim = validateInsuranceClaim(claimData);
 
     // Verify patient DID exists (in production, check against registry)
     const patientManager = new PatientDIDManager();
@@ -39,9 +46,6 @@ export async function POST(request: NextRequest) {
     // Submit claim to blockchain
     const signer = Keypair.generate(); // In production, use authenticated signer
     const txSignature = await submitClaimToChain(claim, signer);
-
-    // Update claim with transaction details
-    claim.timestamp = Date.now();
 
     return NextResponse.json({
       success: true,
