@@ -9,7 +9,7 @@ import
   VersionedTransaction,
 } from '@solana/web3.js';
 import { Program, AnchorProvider, Idl, BN, Wallet } from '@coral-xyz/anchor';
-import { encryptHealthDataForBlockchain, decryptHealthDataFromBlockchain, hashHealthData, hashToBuffer } from './encryption';
+import { encryptHealthDataForBlockchain, decryptHealthDataFromBlockchain, hashHealthData } from './encryption';
 import { MinimalHealthData, InsuranceClaim } from './health-models';
 
 // Solana configuration
@@ -28,90 +28,379 @@ const IDL: Idl = {
   "instructions": [
     {
       "name": "create_claim",
-      "discriminator": [ 71, 122, 43, 84, 240, 165, 215, 181 ],
+      "discriminator": [
+        71,
+        122,
+        43,
+        84,
+        240,
+        165,
+        215,
+        181
+      ],
       "accounts": [
-        { "name": "claim_account", "writable": true, "pda": { "seeds": [ { "kind": "const", "value": [ 99, 108, 97, 105, 109 ] }, { "kind": "arg", "path": "claim_id" } ] } },
-        { "name": "patient", "writable": true, "signer": true },
-        { "name": "provider" },
-        { "name": "system_program", "address": "11111111111111111111111111111111" }
+        {
+          "name": "claim_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "claim_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "patient",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
       "args": [
-        { "name": "claim_id", "type": "string" },
-        { "name": "amount", "type": "u64" },
-        { "name": "health_data_hash", "type": "string" }
+        {
+          "name": "claim_id",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "health_data_hash",
+          "type": "string"
+        }
       ]
     },
     {
       "name": "initialize_patient",
-      "discriminator": [ 44, 13, 38, 126, 186, 168, 125, 190 ],
+      "discriminator": [
+        44,
+        13,
+        38,
+        126,
+        186,
+        168,
+        125,
+        190
+      ],
       "accounts": [
-        { "name": "patient_account", "writable": true, "pda": { "seeds": [ { "kind": "const", "value": [ 112, 97, 116, 105, 101, 110, 116 ] }, { "kind": "account", "path": "authority" } ] } },
-        { "name": "authority", "writable": true, "signer": true },
-        { "name": "system_program", "address": "11111111111111111111111111111111" }
+        {
+          "name": "patient_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  116,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
       "args": [
-        { "name": "did", "type": "string" }
+        {
+          "name": "did",
+          "type": "string"
+        }
       ]
     },
     {
       "name": "initialize_provider",
-      "discriminator": [ 181, 103, 225, 14, 214, 210, 161, 238 ],
+      "discriminator": [
+        181,
+        103,
+        225,
+        14,
+        214,
+        210,
+        161,
+        238
+      ],
       "accounts": [
-        { "name": "provider_account", "writable": true, "pda": { "seeds": [ { "kind": "const", "value": [ 112, 114, 111, 118, 105, 100, 101, 114 ] }, { "kind": "account", "path": "authority" } ] } },
-        { "name": "authority", "writable": true, "signer": true },
-        { "name": "system_program", "address": "11111111111111111111111111111111" }
+        {
+          "name": "provider_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
       "args": [
-        { "name": "did", "type": "string" },
-        { "name": "name", "type": "string" }
+        {
+          "name": "did",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        }
       ]
     },
     {
       "name": "process_payment",
-      "discriminator": [ 189, 81, 30, 198, 139, 186, 115, 23 ],
+      "discriminator": [
+        189,
+        81,
+        30,
+        198,
+        139,
+        186,
+        115,
+        23
+      ],
       "accounts": [
-        { "name": "claim_account", "writable": true },
-        { "name": "provider", "writable": true, "signer": true },
-        { "name": "patient", "writable": true },
-        { "name": "system_program", "address": "11111111111111111111111111111111" }
+        {
+          "name": "claim_account",
+          "writable": true
+        },
+        {
+          "name": "provider",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "patient",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
       "args": []
     },
     {
       "name": "submit_health_data",
-      "discriminator": [ 65, 196, 14, 219, 94, 245, 184, 174 ],
+      "discriminator": [
+        65,
+        196,
+        14,
+        219,
+        94,
+        245,
+        184,
+        174
+      ],
       "accounts": [
-        { "name": "health_data_account", "writable": true, "pda": { "seeds": [ { "kind": "const", "value": [ 104, 101, 97, 108, 116, 104, 95, 100, 97, 116, 97 ] }, { "kind": "arg", "path": "data_hash" } ] } },
-        { "name": "owner", "writable": true, "signer": true },
-        { "name": "system_program", "address": "11111111111111111111111111111111" }
+        {
+          "name": "health_data_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  101,
+                  97,
+                  108,
+                  116,
+                  104,
+                  95,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "data_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
       "args": [
-        { "name": "data_hash", "type": "string" },
-        { "name": "encrypted_data", "type": "string" }
+        {
+          "name": "data_hash",
+          "type": "string"
+        },
+        {
+          "name": "encrypted_data",
+          "type": "string"
+        }
       ]
     },
     {
       "name": "verify_claim",
-      "discriminator": [ 35, 121, 58, 82, 51, 132, 99, 113 ],
+      "discriminator": [
+        35,
+        121,
+        58,
+        82,
+        51,
+        132,
+        99,
+        113
+      ],
       "accounts": [
-        { "name": "claim_account", "writable": true },
-        { "name": "provider", "signer": true }
+        {
+          "name": "claim_account",
+          "writable": true
+        },
+        {
+          "name": "provider",
+          "signer": true
+        }
       ],
       "args": [
-        { "name": "status", "type": { "defined": { "name": "ClaimStatus" } } }
+        {
+          "name": "status",
+          "type": {
+            "defined": {
+              "name": "ClaimStatus"
+            }
+          }
+        }
       ]
     }
   ],
   "accounts": [
-    { "name": "ClaimAccount", "discriminator": [ 113, 109, 47, 96, 242, 219, 61, 165 ] },
-    { "name": "HealthDataAccount", "discriminator": [ 118, 47, 165, 198, 80, 44, 199, 179 ] },
-    { "name": "PatientAccount", "discriminator": [ 235, 103, 40, 224, 205, 208, 192, 46 ] },
-    { "name": "ProviderAccount", "discriminator": [ 0, 183, 216, 154, 30, 170, 67, 66 ] }
+    {
+      "name": "ClaimAccount",
+      "discriminator": [
+        113,
+        109,
+        47,
+        96,
+        242,
+        219,
+        61,
+        165
+      ]
+    },
+    {
+      "name": "HealthDataAccount",
+      "discriminator": [
+        118,
+        47,
+        165,
+        198,
+        80,
+        44,
+        199,
+        179
+      ]
+    },
+    {
+      "name": "PatientAccount",
+      "discriminator": [
+        235,
+        103,
+        40,
+        224,
+        205,
+        208,
+        192,
+        46
+      ]
+    },
+    {
+      "name": "ProviderAccount",
+      "discriminator": [
+        0,
+        183,
+        216,
+        154,
+        30,
+        170,
+        67,
+        66
+      ]
+    }
   ],
   "errors": [
-    { "code": 6000, "name": "Unauthorized", "msg": "You are not authorized to perform this action." },
-    { "code": 6001, "name": "InvalidPatient", "msg": "The patient account does not match the claim." },
-    { "code": 6002, "name": "ClaimNotVerified", "msg": "The claim must be verified before payment." }
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "You are not authorized to perform this action."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidPatient",
+      "msg": "The patient account does not match the claim."
+    },
+    {
+      "code": 6002,
+      "name": "ClaimNotVerified",
+      "msg": "The claim must be verified before payment."
+    }
   ],
   "types": [
     {
@@ -119,13 +408,38 @@ const IDL: Idl = {
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "claim_id", "type": "string" },
-          { "name": "patient", "type": "pubkey" },
-          { "name": "provider", "type": "pubkey" },
-          { "name": "health_data_hash", "type": "string" },
-          { "name": "amount", "type": "u64" },
-          { "name": "status", "type": { "defined": { "name": "ClaimStatus" } } },
-          { "name": "timestamp", "type": "i64" }
+          {
+            "name": "claim_id",
+            "type": "string"
+          },
+          {
+            "name": "patient",
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "health_data_hash",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ClaimStatus"
+              }
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
         ]
       }
     },
@@ -134,10 +448,18 @@ const IDL: Idl = {
       "type": {
         "kind": "enum",
         "variants": [
-          { "name": "Pending" },
-          { "name": "Verified" },
-          { "name": "Paid" },
-          { "name": "Rejected" }
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Verified"
+          },
+          {
+            "name": "Paid"
+          },
+          {
+            "name": "Rejected"
+          }
         ]
       }
     },
@@ -146,10 +468,22 @@ const IDL: Idl = {
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "owner", "type": "pubkey" },
-          { "name": "data_hash", "type": "string" },
-          { "name": "encrypted_data", "type": "string" },
-          { "name": "timestamp", "type": "i64" }
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "data_hash",
+            "type": "string"
+          },
+          {
+            "name": "encrypted_data",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
         ]
       }
     },
@@ -158,8 +492,14 @@ const IDL: Idl = {
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "authority", "type": "pubkey" },
-          { "name": "did", "type": "string" }
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "did",
+            "type": "string"
+          }
         ]
       }
     },
@@ -168,9 +508,18 @@ const IDL: Idl = {
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "authority", "type": "pubkey" },
-          { "name": "did", "type": "string" },
-          { "name": "name", "type": "string" }
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "did",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          }
         ]
       }
     }
@@ -330,7 +679,7 @@ export class HealthDataStorageService
     const dataHash = hashHealthData( JSON.stringify( healthData ) );
 
     const [ healthDataPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "health_data" ), hashToBuffer( dataHash ) ],
+      [ Buffer.from( "health_data" ), Buffer.from( dataHash ) ],
       program.programId
     );
 
@@ -361,7 +710,7 @@ export class HealthDataStorageService
     const program = new Program( IDL, provider );
 
     const [ healthDataPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "health_data" ), hashToBuffer( dataHash ) ],
+      [ Buffer.from( "health_data" ), Buffer.from( dataHash ) ],
       program.programId
     );
 
@@ -390,7 +739,7 @@ export class HealthDataStorageService
     const program = this.getProgram( wallet );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "claim" ), hashToBuffer( claim.claimId ) ],
+      [ Buffer.from( "claim" ), Buffer.from( claim.claimId ) ],
       program.programId
     );
 
@@ -420,7 +769,7 @@ export class HealthDataStorageService
     const program = new Program( IDL, provider );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "claim" ), hashToBuffer( claimId ) ],
+      [ Buffer.from( "claim" ), Buffer.from( claimId ) ],
       program.programId
     );
 
@@ -444,7 +793,7 @@ export class HealthDataStorageService
     const program = this.getProgram( wallet );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "claim" ), hashToBuffer( claimId ) ],
+      [ Buffer.from( "claim" ), Buffer.from( claimId ) ],
       program.programId
     );
 
@@ -495,7 +844,7 @@ export function validateDataIntegrity (
   return generateDataHash( healthData ) === storedHash;
 }
 
-// Mock functions for development (replace with actual program calls)
+// Real on-chain functions
 export async function storeHealthDataOnChain (
   healthData: MinimalHealthData,
   encryptionKey: string,
