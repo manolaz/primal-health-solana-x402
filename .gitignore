@@ -43,3 +43,4 @@ next-env.d.ts
 
 # x402 transaction storage
 .verified-transactions.json
+env.txt
