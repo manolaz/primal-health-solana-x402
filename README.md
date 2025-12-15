@@ -197,6 +197,10 @@ primal-health-solana-x402/
 
 ## Configuration
 
+### Deployed Program (Devnet)
+
+- **Program ID**: `2LjMTbA2Z3ZftCr8UCJ3c5cauBq48NRBbXbiy6Zkkhao`
+
 ### Environment Variables
 
 The template uses sensible defaults, but you can customize by creating a `.env.local` file:
