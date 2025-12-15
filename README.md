@@ -1,55 +1,59 @@
-# X402 Next.js Solana Template
+# Primal Health - Solana Insurance Claims
 
-**A simple Next.js starter template with X402 payment protocol integration for Solana.**
+**A secure, privacy-first health insurance claims platform built on Solana Devnet using X402 payment protocol.**
 
-This template demonstrates a streamlined implementation of the X402 payment protocol using the `x402-next` package, making it easy to add cryptocurrency payment gates to your Next.js applications.
+Primal Health enables patients to submit minimal encrypted health diagnostic data and receive automated insurance payments through blockchain-verified smart contracts. The platform prioritizes patient privacy while ensuring transparent, efficient claims processing.
 
-> ⚠️ **Using on Mainnet?** This template is configured for testnet (devnet) by default. To accept real payments on mainnet, you'll need to set up CDP API keys and configure a fee payer. See the [CDP X402 Mainnet Documentation](https://docs.cdp.coinbase.com/x402/quickstart-for-sellers#running-on-mainnet) for complete setup instructions.
+> ⚠️ **Development Environment** This application is configured for Solana Devnet. All payments use test tokens and data is encrypted for privacy.
 
 ## Table of Contents
 
-- [What is X402?](#what-is-x402)
-- [Features](#features)
-- [Getting Started](#getting-started)
+- [What is Primal Health?](#what-is-primal-health)
+- [Key Features](#key-features)
 - [How It Works](#how-it-works)
+- [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
+- [Privacy & Security](#privacy--security)
+- [API Documentation](#api-documentation)
 - [Configuration](#configuration)
-- [Usage](#usage)
 
 ---
 
-## What is X402?
+## What is Primal Health?
 
-**X402** is an open payment protocol that uses HTTP status code **402 "Payment Required"** to enable seamless cryptocurrency payments for web content and APIs.
+**Primal Health** is a decentralized health insurance claims platform that leverages Solana blockchain and X402 payment protocol to create a secure, efficient, and patient-centric claims process.
 
 ### Key Benefits
 
-- **Direct Payments** - Accept cryptocurrency payments without third-party payment processors
-- **No Accounts** - No user registration or authentication required
-- **Blockchain-Verified** - Payments are verified directly on the Solana blockchain
-- **Simple Integration** - Add payment gates to any Next.js route with middleware
-- **Flexible Pricing** - Set different prices for different content
+- **Patient Privacy First** - Minimal data sharing with end-to-end encryption
+- **Automated Payments** - Smart contract-based insurance payouts
+- **DID-Based Identity** - Decentralized identifiers for secure patient authentication
+- **Blockchain Transparency** - Immutable claim records with cryptographic verification
+- **No Intermediaries** - Direct patient-to-insurance provider transactions
 
 ### How It Works
 
 ```
-1. User requests protected content
-2. Server responds with 402 Payment Required
-3. User makes payment via Coinbase Pay or crypto wallet
-4. User proves payment with transaction signature
-5. Server verifies on blockchain and grants access
+1. Patient submits health diagnostic results (encrypted, minimal data)
+2. Data is stored on Solana blockchain with cryptographic integrity
+3. Patient files insurance claim through secure API
+4. Insurance provider verifies claim data automatically
+5. Smart contract triggers payment from insurance to patient
+6. Patient receives instant blockchain-verified payment
 ```
 
 ---
 
-## Features
+## Key Features
 
-- **X402 Payment Middleware** - Powered by `x402-next` package
-- **Solana Integration** - Uses Solana blockchain for payment verification
-- **Multiple Price Tiers** - Configure different prices for different routes
-- **Session Management** - Automatic session handling after payment
-- **Type-Safe** - Full TypeScript support with Viem types
-- **Next.js 16** - Built on the latest Next.js App Router
+- **🔐 End-to-End Encryption** - AES-256 encryption for health data
+- **🆔 Decentralized Identity** - Solana-based DID system for patients
+- **⚡ Automated Claims** - Smart contract-driven insurance payments
+- **🛡️ Privacy Controls** - Granular consent management and data rights
+- **📊 Real-time Dashboard** - Track claims and payment status
+- **🔗 X402 Integration** - Coinbase Pay for seamless crypto payments
+- **📱 Responsive UI** - Modern, accessible web interface
+- **🔍 Data Verification** - Cryptographic proof of health data integrity
 
 ---
 
@@ -59,7 +63,7 @@ This template demonstrates a streamlined implementation of the X402 payment prot
 
 - Node.js 18+ or Bun
 - pnpm, npm, or yarn
-- A Solana wallet address to receive payments
+- A Solana wallet (Phantom, Solflare, etc.) for testing
 
 ### Installation
 
@@ -79,13 +83,22 @@ pnpm dev
 
 Visit `http://localhost:3000` to see your app running.
 
-### Test the Payment Flow
+### Test the Health Claims Flow
 
-1. Navigate to `http://localhost:3000`
-2. Click on "Access Cheap Content" or "Access Expensive Content"
-3. You'll be presented with a Coinbase Pay payment dialog
-4. Complete the payment
-5. Access is granted and you'll see the protected content
+1. **Submit Diagnostics**: Navigate to `/diagnostics` and submit health diagnostic results
+2. **File Insurance Claim**: Go to `/claims` to file an insurance claim using your diagnostic data
+3. **Monitor Claims**: Check `/dashboard` to view claim status and payment history
+4. **Manage Privacy**: Use the Privacy & Consent tab to control data sharing preferences
+
+### Demo Flow
+
+```
+1. Patient submits encrypted health data → Stored on Solana
+2. Patient files insurance claim → Claim recorded on blockchain
+3. Insurance verifies data integrity → Automated validation
+4. Smart contract triggers payment → Patient receives SOL
+5. Patient views claim status → Real-time dashboard updates
+```
 
 ---
 
