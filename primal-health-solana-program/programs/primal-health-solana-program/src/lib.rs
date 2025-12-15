@@ -55,15 +55,51 @@ pub mod primal_health_solana_program {
         let claim_account = &mut ctx.accounts.claim_account;
         
         // Only the assigned provider can verify
-        // In a real app, we would check if the signer is the authority of the provider account
-        // For simplicity, we check if the signer matches the provider pubkey stored in the claim
-        // (Assuming the provider pubkey in the claim IS the authority key)
         require!(
             claim_account.provider == ctx.accounts.provider.key(),
             ErrorCode::Unauthorized
         );
 
         claim_account.status = status;
+        Ok(())
+    }
+
+    pub fn process_payment(ctx: Context<ProcessPayment>) -> Result<()> {
+        let claim_account = &mut ctx.accounts.claim_account;
+        let provider = &mut ctx.accounts.provider;
+        let patient = &mut ctx.accounts.patient;
+        let system_program = &ctx.accounts.system_program;
+
+        // Checks
+        require!(
+            claim_account.provider == provider.key(),
+            ErrorCode::Unauthorized
+        );
+        require!(
+            claim_account.patient == patient.key(),
+            ErrorCode::InvalidPatient
+        );
+        require!(
+            claim_account.status == ClaimStatus::Verified,
+            ErrorCode::ClaimNotVerified
+        );
+
+        // Transfer SOL from provider to patient
+        let amount = claim_account.amount;
+        
+        let cpi_context = CpiContext::new(
+            system_program.to_account_info(),
+            anchor_lang::system_program::Transfer {
+                from: provider.to_account_info(),
+                to: patient.to_account_info(),
+            },
+        );
+        
+        anchor_lang::system_program::transfer(cpi_context, amount)?;
+
+        // Update claim status
+        claim_account.status = ClaimStatus::Paid;
+        
         Ok(())
     }
 }
@@ -141,6 +177,18 @@ pub struct VerifyClaim<'info> {
     pub provider: Signer<'info>,
 }
 
+#[derive(Accounts)]
+pub struct ProcessPayment<'info> {
+    #[account(mut)]
+    pub claim_account: Account<'info, ClaimAccount>,
+    #[account(mut)]
+    pub provider: Signer<'info>,
+    /// CHECK: We are transferring funds to this account, verified by claim_account.patient
+    #[account(mut)]
+    pub patient: UncheckedAccount<'info>,
+    pub system_program: Program<'info, System>,
+}
+
 #[account]
 pub struct PatientAccount {
     pub authority: Pubkey,
@@ -173,6 +221,10 @@ pub struct ClaimAccount {
     pub timestamp: i64,
 }
 
+    #[msg("The patient account does not match the claim.")]
+    InvalidPatient,
+    #[msg("The claim must be verified before payment.")]
+    ClaimNotVerified,
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub enum ClaimStatus {
     Pending,
