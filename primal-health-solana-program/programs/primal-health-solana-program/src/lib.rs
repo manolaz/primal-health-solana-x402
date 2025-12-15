@@ -143,7 +143,7 @@ pub struct SubmitHealthData<'info> {
         init,
         payer = owner,
         space = 8 + 32 + 4 + data_hash.len() + 4 + encrypted_data.len() + 8 + 64,
-        seeds = [b"health_data", data_hash.as_bytes()],
+        seeds = [b"health_data", anchor_lang::solana_program::hash::hash(data_hash.as_bytes()).as_ref()],
         bump
     )]
     pub health_data_account: Account<'info, HealthDataAccount>,
@@ -159,7 +159,7 @@ pub struct CreateClaim<'info> {
         init,
         payer = patient,
         space = 8 + 4 + claim_id.len() + 32 + 32 + 4 + 64 + 8 + 1 + 1 + 8 + 64,
-        seeds = [b"claim", claim_id.as_bytes()],
+        seeds = [b"claim", anchor_lang::solana_program::hash::hash(claim_id.as_bytes()).as_ref()],
         bump
     )]
     pub claim_account: Account<'info, ClaimAccount>,

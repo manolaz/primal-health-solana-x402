@@ -8,30 +8,35 @@ import { PublicKey, Keypair } from '@solana/web3.js';
  */
 
 // Generate a random AES key
-export function generateAESKey(): string {
-  return CryptoJS.lib.WordArray.random(256/8).toString();
+export function generateAESKey (): string
+{
+  return CryptoJS.lib.WordArray.random( 256 / 8 ).toString();
 }
 
 // Encrypt data using AES-256
-export function encryptAES(data: string, key: string): string {
-  return CryptoJS.AES.encrypt(data, key).toString();
+export function encryptAES ( data: string, key: string ): string
+{
+  return CryptoJS.AES.encrypt( data, key ).toString();
 }
 
 // Decrypt data using AES-256
-export function decryptAES(encryptedData: string, key: string): string {
-  const bytes = CryptoJS.AES.decrypt(encryptedData, key);
-  return bytes.toString(CryptoJS.enc.Utf8);
+export function decryptAES ( encryptedData: string, key: string ): string
+{
+  const bytes = CryptoJS.AES.decrypt( encryptedData, key );
+  return bytes.toString( CryptoJS.enc.Utf8 );
 }
 
 // Generate Solana keypair for asymmetric encryption
-export function generateKeypair(): Keypair {
+export function generateKeypair (): Keypair
+{
   return Keypair.generate();
 }
 
 // Encrypt data using recipient's public key (asymmetric encryption)
-export function encryptAsymmetric(data: string, recipientPublicKey: PublicKey): { encrypted: Uint8Array; nonce: Uint8Array } {
-  const messageBytes = new TextEncoder().encode(data);
-  const nonce = nacl.randomBytes(nacl.box.nonceLength);
+export function encryptAsymmetric ( data: string, recipientPublicKey: PublicKey ): { encrypted: Uint8Array; nonce: Uint8Array }
+{
+  const messageBytes = new TextEncoder().encode( data );
+  const nonce = nacl.randomBytes( nacl.box.nonceLength );
 
   // Generate ephemeral keypair for this encryption
   const ephemeralKeypair = nacl.box.keyPair();
@@ -50,12 +55,13 @@ export function encryptAsymmetric(data: string, recipientPublicKey: PublicKey): 
 }
 
 // Decrypt data using recipient's private key (asymmetric decryption)
-export function decryptAsymmetric(
+export function decryptAsymmetric (
   encryptedData: Uint8Array,
   nonce: Uint8Array,
   senderPublicKey: Uint8Array,
   recipientPrivateKey: Uint8Array
-): string {
+): string
+{
   const decrypted = nacl.box.open(
     encryptedData,
     nonce,
@@ -63,69 +69,87 @@ export function decryptAsymmetric(
     recipientPrivateKey
   );
 
-  if (!decrypted) {
-    throw new Error('Failed to decrypt data - invalid keys or corrupted data');
+  if ( !decrypted )
+  {
+    throw new Error( 'Failed to decrypt data - invalid keys or corrupted data' );
   }
 
-  return new TextDecoder().decode(decrypted);
+  return new TextDecoder().decode( decrypted );
 }
 
 // Create a hash of health data for integrity verification
-export function hashHealthData(data: string): string {
-  return CryptoJS.SHA256(data).toString();
+export function hashHealthData ( data: string ): string
+{
+  return CryptoJS.SHA256( data ).toString();
+}
+
+// Hash string to Buffer for PDA seeds
+export function hashToBuffer ( data: string ): Buffer
+{
+  const hash = CryptoJS.SHA256( data );
+  return Buffer.from( hash.toString( CryptoJS.enc.Hex ), 'hex' );
 }
 
 // Verify data integrity using hash
-export function verifyDataIntegrity(data: string, hash: string): boolean {
-  return hashHealthData(data) === hash;
+export function verifyDataIntegrity ( data: string, hash: string ): boolean
+{
+  return hashHealthData( data ) === hash;
 }
 
 // Encrypt minimal health data for blockchain storage
-export interface MinimalHealthData {
+export interface MinimalHealthData
+{
   timestamp: number;
   disease: string;
   result: 'positive' | 'negative' | 'inconclusive';
   patientDID: string;
 }
 
-export function encryptHealthDataForBlockchain(
+export function encryptHealthDataForBlockchain (
   data: MinimalHealthData,
   encryptionKey: string
-): string {
-  const dataString = JSON.stringify(data);
-  return encryptAES(dataString, encryptionKey);
+): string
+{
+  const dataString = JSON.stringify( data );
+  return encryptAES( dataString, encryptionKey );
 }
 
-export function decryptHealthDataFromBlockchain(
+export function decryptHealthDataFromBlockchain (
   encryptedData: string,
   encryptionKey: string
-): MinimalHealthData {
-  const decryptedString = decryptAES(encryptedData, encryptionKey);
-  return JSON.parse(decryptedString);
+): MinimalHealthData
+{
+  const decryptedString = decryptAES( encryptedData, encryptionKey );
+  return JSON.parse( decryptedString );
 }
 
 // Generate patient DID from Solana public key
-export function generatePatientDID(publicKey: PublicKey): string {
+export function generatePatientDID ( publicKey: PublicKey ): string
+{
   // DID format: did:solana:<network>:<publicKey>
-  return `did:solana:mainnet:${publicKey.toString()}`;
+  return `did:solana:mainnet:${ publicKey.toString() }`;
 }
 
 // Verify DID format
-export function verifyDID(did: string): boolean {
+export function verifyDID ( did: string ): boolean
+{
   const didRegex = /^did:solana:(mainnet|devnet|testnet):[1-9A-HJ-NP-Za-km-z]{32,44}$/;
-  return didRegex.test(did);
+  return didRegex.test( did );
 }
 
 // Extract public key from DID
-export function extractPublicKeyFromDID(did: string): PublicKey {
-  if (!verifyDID(did)) {
-    throw new Error('Invalid DID format');
+export function extractPublicKeyFromDID ( did: string ): PublicKey
+{
+  if ( !verifyDID( did ) )
+  {
+    throw new Error( 'Invalid DID format' );
   }
 
-  const parts = did.split(':');
-  if (parts.length !== 4) {
-    throw new Error('Invalid DID structure');
+  const parts = did.split( ':' );
+  if ( parts.length !== 4 )
+  {
+    throw new Error( 'Invalid DID structure' );
   }
 
-  return new PublicKey(parts[3]);
+  return new PublicKey( parts[ 3 ] );
 }

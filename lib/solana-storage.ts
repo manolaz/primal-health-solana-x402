@@ -9,7 +9,7 @@ import
   VersionedTransaction,
 } from '@solana/web3.js';
 import { Program, AnchorProvider, Idl, BN } from '@coral-xyz/anchor';
-import { encryptHealthDataForBlockchain, decryptHealthDataFromBlockchain, hashHealthData } from './encryption';
+import { encryptHealthDataForBlockchain, decryptHealthDataFromBlockchain, hashHealthData, hashToBuffer } from './encryption';
 import { MinimalHealthData, InsuranceClaim } from './health-models';
 
 // Solana configuration
@@ -333,7 +333,7 @@ export class HealthDataStorageService
     const dataHash = hashHealthData( JSON.stringify( healthData ) );
 
     const [ healthDataPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "health_data" ), Buffer.from( dataHash ) ],
+      [ Buffer.from( "health_data" ), hashToBuffer( dataHash ) ],
       program.programId
     );
 
@@ -365,7 +365,7 @@ export class HealthDataStorageService
     const program = new Program( IDL, provider );
 
     const [ healthDataPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "health_data" ), Buffer.from( dataHash ) ],
+      [ Buffer.from( "health_data" ), hashToBuffer( dataHash ) ],
       program.programId
     );
 
@@ -394,7 +394,7 @@ export class HealthDataStorageService
     const program = this.getProgram( signer );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "claim" ), Buffer.from( claim.claimId ) ],
+      [ Buffer.from( "claim" ), hashToBuffer( claim.claimId ) ],
       program.programId
     );
 
@@ -425,7 +425,7 @@ export class HealthDataStorageService
     const program = new Program( IDL, provider );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "claim" ), Buffer.from( claimId ) ],
+      [ Buffer.from( "claim" ), hashToBuffer( claimId ) ],
       program.programId
     );
 
@@ -449,7 +449,7 @@ export class HealthDataStorageService
     const program = this.getProgram( providerSigner );
 
     const [ claimPDA ] = PublicKey.findProgramAddressSync(
-      [ Buffer.from( "claim" ), Buffer.from( claimId ) ],
+      [ Buffer.from( "claim" ), hashToBuffer( claimId ) ],
       program.programId
     );
 
